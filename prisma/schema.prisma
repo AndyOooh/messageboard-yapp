@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Post model
+model Post {
+  id         Int      @id @default(autoincrement())
+  creatorEns String   @map("creator_ens") // ENS of the poster
+  header     String   @db.VarChar(100) // Max 100 chars
+  content    String   @db.VarChar(280) // Max 280 chars
+  txHash     String   @unique @map("tx_hash") // Ethereum tx hash
+  paid       Boolean  @default(false)
+  tags       String[] // Array of tags
+  upvotes    Int      @default(0)
+  downvotes  Int      @default(0)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+  status     String   @default("pending") // 'pending', 'confirmed', 'failed'
+
+  // Relations
+  comments      Comment[]
+  notifications Notification[]
+  votes         Vote[]
+
+  @@index([creatorEns])
+  @@index([tags])
+  @@index([createdAt])
+}
+
+// Comment model
+model Comment {
+  id         Int      @id @default(autoincrement())
+  postId     Int      @map("post_id")
+  creatorEns String   @map("creator_ens") // ENS of the commenter
+  content    String   @db.VarChar(280) // Max 280 chars
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  post          Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  notifications Notification[]
+
+  @@index([postId])
+  @@index([creatorEns])
+}
+
+// Notification model
+model Notification {
+  id        Int      @id @default(autoincrement())
+  ensName   String   @map("ens_name") // ENS of the user to notify
+  postId    Int?     @map("post_id")
+  commentId Int?     @map("comment_id")
+  eventType String   @map("event_type") @db.VarChar(20) // e.g., 'new_post', 'new_comment'
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  post    Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([ensName, postId, commentId]) // Prevent duplicates
+  @@index([ensName])
+  @@index([isRead])
+}
+
+// Badge model
+model Badge {
+  id        Int      @id @default(autoincrement())
+  ensName   String   @map("ens_name") // ENS of the recipient
+  badgeType String   @map("badge_type") @db.VarChar(50) // e.g., 'founding_poster'
+  awardedAt DateTime @default(now()) @map("awarded_at")
+
+  @@unique([ensName, badgeType])
+  @@index([ensName])
+}
+
+// Vote model
+model Vote {
+  id        Int      @id @default(autoincrement())
+  postId    Int      @map("post_id")
+  voterEns  String   @map("voter_ens") // ENS of the voter
+  voteType  String   @map("vote_type") @db.VarChar(4) // 'up' or 'down'
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, voterEns])
+  @@index([postId])
+}
