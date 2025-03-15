@@ -21,3 +21,6 @@ export default async function Home() {
     </main>
   );
 }
+
+// Revalidate every 30 seconds - a compromise between performance and freshness
+export const revalidate = 30;

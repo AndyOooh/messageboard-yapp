@@ -44,6 +44,18 @@ export async function create(data: Prisma.PostCreateInput) {
     data,
   });
 
+  // Trigger revalidation
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/revalidate?token=${process.env.REVALIDATION_TOKEN}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: "/" }),
+    });
+  } catch (error) {
+    // Log error but don't fail the post creation
+    console.error("Failed to revalidate:", error);
+  }
+
   return post;
 }
 
