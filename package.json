@@ -1,5 +1,6 @@
 {
   "name": "messageboard-yapp",
+  "description": "Yodl community message board mini-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
