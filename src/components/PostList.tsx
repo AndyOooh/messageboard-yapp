@@ -11,6 +11,7 @@ type PostListProps = {
 };
 
 export default function PostList({ initialPosts }: PostListProps) {
+  console.log('🚀 initialPosts:', initialPosts);
   const [posts, setPosts] = useState<PostExtended[]>(initialPosts);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);

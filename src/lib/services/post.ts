@@ -4,21 +4,25 @@ import type { Prisma, Post } from "@prisma/client";
 export async function getAll(options?: { limit?: number; offset?: number; orderBy?: Prisma.PostOrderByWithRelationInput }) {
   const { limit = 10, offset = 0, orderBy = { createdAt: "desc" } } = options || {};
 
-  const posts = await prisma.post.findMany({
-    take: limit,
-    skip: offset,
-    orderBy,
-    include: {
-      _count: {
-        select: {
-          comments: true,
+  try {
+    const posts = await prisma.post.findMany({
+      take: limit,
+      skip: offset,
+      orderBy,
+      include: {
+        _count: {
+          select: {
+            comments: true,
+          },
         },
+        votes: true,
       },
-      votes: true,
-    },
-  });
+    });
 
-  return posts;
+    return posts;
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+  }
 }
 
 export async function getById(id: number) {
