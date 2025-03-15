@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as CommentService from "@/lib/services/comment";
 
-export async function GET(request: NextRequest, { params }: { params: { postId: string } }) {
-  try {
-    const postId = parseInt(params.postId);
+type RouteParams = { params: Promise<{ postId: string }> };
 
-    if (isNaN(postId)) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
+  try {
+    const { postId } = await params;
+    const postIdInt = parseInt(postId);
+
+    if (isNaN(postIdInt)) {
       return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
     }
 
-    const comments = await CommentService.getByPostId(postId);
+    const comments = await CommentService.getByPostId(postIdInt);
 
     return NextResponse.json(comments);
   } catch (error) {
@@ -18,11 +21,12 @@ export async function GET(request: NextRequest, { params }: { params: { postId: 
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { postId: string } }) {
+export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
-    const postId = parseInt(params.postId);
+    const { postId } = await params;
+    const postIdInt = parseInt(postId);
 
-    if (isNaN(postId)) {
+    if (isNaN(postIdInt)) {
       return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
     }
 
@@ -37,7 +41,7 @@ export async function POST(request: NextRequest, { params }: { params: { postId:
       content,
       creatorEns,
       post: {
-        connect: { id: postId },
+        connect: { id: postIdInt },
       },
     });
 

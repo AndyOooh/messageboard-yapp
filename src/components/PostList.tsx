@@ -3,21 +3,15 @@
 import { useState, useEffect } from "react";
 import { Box, Card, Flex, Text, Heading, Badge, Separator } from "@radix-ui/themes";
 import { useInView } from "react-intersection-observer";
-import type { Post } from "@prisma/client";
 import PostCard from "@/components/PostCard";
-
-export type PostWithCounts = Post & {
-  _count?: {
-    comments: number;
-  };
-};
+import { PostExtended } from "@/types";
 
 type PostListProps = {
-  initialPosts: PostWithCounts[];
+  initialPosts: PostExtended[];
 };
 
 export default function PostList({ initialPosts }: PostListProps) {
-  const [posts, setPosts] = useState<PostWithCounts[]>(initialPosts);
+  const [posts, setPosts] = useState<PostExtended[]>(initialPosts);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);

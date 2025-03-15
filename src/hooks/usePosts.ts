@@ -1,48 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-// Define types for our API responses
-export type Post = {
-  id: number;
-  creatorEns: string;
-  header: string;
-  content: string;
-  txHash: string;
-  paid: boolean;
-  tags: string[];
-  status: string;
-  upvotes: number;
-  downvotes: number;
-  createdAt: string;
-  updatedAt: string;
-  _count?: {
-    comments: number;
-  };
-  votes?: {
-    id: number;
-    voterEns: string;
-    voteType: "up" | "down";
-    createdAt: string;
-  }[];
-  comments?: Comment[];
-};
-
-type Comment = {
-  id: number;
-  content: string;
-  creatorEns: string;
-  postId: number;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type Vote = {
-  id: number;
-  value: number;
-  creatorEns: string;
-  postId: number;
-  createdAt: string;
-  updatedAt: string;
-};
+import type { Post, Vote, Comment } from "@prisma/client";
 
 type PostCreateInput = {
   creatorEns: string;

@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as PostService from "@/lib/services/post";
 
-export async function GET(request: NextRequest, { params }: { params: { postId: string } }) {
-  try {
-    const postId = parseInt(params.postId);
+type RouteParams = { params: Promise<{ postId: string }> };
 
-    if (isNaN(postId)) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
+  try {
+    const { postId } = await params;
+    const postIdInt = parseInt(postId);
+
+    if (isNaN(postIdInt)) {
       return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
     }
 
-    const post = await PostService.getById(postId);
+    const post = await PostService.getById(postIdInt);
 
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
@@ -22,11 +25,12 @@ export async function GET(request: NextRequest, { params }: { params: { postId: 
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { postId: string } }) {
+export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
-    const postId = parseInt(params.postId);
+    const { postId } = await params;
+    const postIdInt = parseInt(postId);
 
-    if (isNaN(postId)) {
+    if (isNaN(postIdInt)) {
       return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
     }
 
@@ -37,7 +41,7 @@ export async function PUT(request: NextRequest, { params }: { params: { postId: 
       return NextResponse.json({ error: "No update data provided" }, { status: 400 });
     }
 
-    const updatedPost = await PostService.update(postId, data);
+    const updatedPost = await PostService.update(postIdInt, data);
 
     return NextResponse.json(updatedPost);
   } catch (error) {
@@ -46,15 +50,16 @@ export async function PUT(request: NextRequest, { params }: { params: { postId: 
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { postId: string } }) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
-    const postId = parseInt(params.postId);
+    const { postId } = await params;
+    const postIdInt = parseInt(postId);
 
-    if (isNaN(postId)) {
+    if (isNaN(postIdInt)) {
       return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
     }
 
-    await PostService.remove(postId);
+    await PostService.remove(postIdInt);
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postKeys } from "./usePosts";
-import type { Post } from "./usePosts"; // Import the Post type
 
 type VoteData = {
   postId: number;
@@ -30,6 +29,6 @@ export function useVote() {
     onSuccess: updatedPost => {
       queryClient.invalidateQueries({ queryKey: postKeys.lists() });
       queryClient.refetchQueries({ queryKey: postKeys.lists() });
-    },  
+    },
   });
 }

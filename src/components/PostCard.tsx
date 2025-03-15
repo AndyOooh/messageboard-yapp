@@ -4,13 +4,13 @@ import { useState } from "react";
 import { Card, Flex, Text, Heading, Badge, Box, Button, Avatar } from "@radix-ui/themes";
 import { formatDistanceToNow } from "date-fns";
 import CommentList from "@/components/CommentList";
-import { Post } from "@/hooks/usePosts";
+import { PostExtended } from "@/types";
 import { useVote } from "@/hooks/useVotes";
 import Link from "next/link";
 import { tags } from "@/constants";
 
 type PostCardProps = {
-  post: Post;
+  post: PostExtended;
 };
 
 export default function PostCard({ post: initialPost }: PostCardProps) {
