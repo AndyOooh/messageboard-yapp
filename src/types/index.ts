@@ -10,3 +10,25 @@ export type PostExtended = Post & {
   votes?: Vote[];
   comments?: Comment[];
 };
+
+// From indexer api
+export type PaymentSimple = {
+  chainId: number;
+  txHash: string;
+  paymentIndex: number;
+  blockTimestamp: string;
+
+  tokenOutSymbol: string;
+  tokenOutAddress: string;
+  tokenOutAmountGross: string;
+
+  receiverAddress: string;
+  receiverEnsPrimaryName: string;
+  receiverYodlConfig: any;
+
+  invoiceCurrency: string;
+  invoiceAmount: string;
+
+  senderAddress: string;
+  senderEnsPrimaryName: string;
+};

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Box, Card, Flex, Text, Heading, Badge, Separator } from "@radix-ui/themes";
+import { Box, Flex, Text } from "@radix-ui/themes";
 import { useInView } from "react-intersection-observer";
 import PostCard from "@/components/PostCard";
 import { PostExtended } from "@/types";
@@ -11,18 +11,15 @@ type PostListProps = {
 };
 
 export default function PostList({ initialPosts }: PostListProps) {
-  console.log('🚀 initialPosts:', initialPosts);
   const [posts, setPosts] = useState<PostExtended[]>(initialPosts);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  // Set up intersection observer for infinite scrolling
   const { ref, inView } = useInView({
     threshold: 0.1,
   });
 
-  // Load more posts when the load more element comes into view
   useEffect(() => {
     const loadMorePosts = async () => {
       if (inView && hasMore && !loading) {
@@ -70,7 +67,6 @@ export default function PostList({ initialPosts }: PostListProps) {
         <PostCard key={post.id} post={post} />
       ))}
 
-      {/* Loading indicator and intersection observer target */}
       {hasMore && (
         <Box ref={ref} py='4'>
           {loading ? <Text size='2'>Loading more posts...</Text> : <Text size='2'>Scroll for more</Text>}

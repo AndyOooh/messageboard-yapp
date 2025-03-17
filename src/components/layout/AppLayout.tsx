@@ -20,9 +20,6 @@ export function AppLayout({ children }: AppLayoutProps) {
           <main className='mb-16 px-4'>{children}</main>
         </Flex>
       </Container>
-      {/* <Box px='4' position='fixed' bottom='0' left='0' right='0' className='bg-black/10 backdrop-blur-sm'>
-        <Navigation />
-      </Box> */}
     </>
   );
 }

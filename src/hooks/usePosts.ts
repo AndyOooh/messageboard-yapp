@@ -6,7 +6,7 @@ type PostCreateInput = {
   creatorEns: string;
   header: string;
   content: string;
-  txHash: string;
+  txHash?: string;
   paid: boolean;
   tags?: string[];
   status?: string;

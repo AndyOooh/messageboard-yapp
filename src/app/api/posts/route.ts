@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
 
     // Validate required fields
-    if (!data.creatorEns || !data.header || !data.content || !data.txHash || !data.paid) {
+    if (!data.creatorEns || !data.header || !data.content) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -42,9 +42,8 @@ export async function POST(request: NextRequest) {
       header: data.header,
       content: data.content,
       txHash: data.txHash,
-      paid: data.paid, // This will be automatically converted to Decimal by Prisma
+      paid: data.paid ?? false,
       tags: data.tags,
-      status: data.status || "pending",
     });
 
     return NextResponse.json(post, { status: 201 });

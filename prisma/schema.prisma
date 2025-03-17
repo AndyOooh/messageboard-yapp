@@ -19,14 +19,13 @@ model Post {
   creatorEns String   @map("creator_ens") // ENS of the poster
   header     String   @db.VarChar(100) // Max 100 chars
   content    String   @db.VarChar(280) // Max 280 chars
-  txHash     String   @unique @map("tx_hash") // Ethereum tx hash
+  txHash     String?  @unique @map("tx_hash") // Ethereum tx hash - now nullable
   paid       Boolean  @default(false)
   tags       String[] // Array of tags
   upvotes    Int      @default(0)
   downvotes  Int      @default(0)
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")
-  status     String   @default("pending") // 'pending', 'confirmed', 'failed'
 
   // Relations
   comments      Comment[]

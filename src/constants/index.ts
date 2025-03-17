@@ -1,5 +1,9 @@
+import { FiatCurrency } from "@yodlpay/yapp-sdk/dist/types/currency";
+import { Address } from "viem";
+
+export * from "./tag";
 export * from "./chain";
-import { BadgeProps } from "@radix-ui/themes/";
+export * from "./styles";
 
 export const CONFIG = {
   YAPP_URL: process.env.NEXT_PUBLIC_YAPP_URL,
@@ -9,38 +13,9 @@ export const CONFIG = {
   INDEXER_URL: "https://tx.yodl.me/api/v1",
   IS_DEV: process.env.NODE_ENV === "development",
   DATABASE_URL: process.env.DATABASE_URL,
+  POST_FEE: {
+    currency: FiatCurrency.USD,
+    amount: 0.01,
+  },
+  COMMUNITY_ADDRESS: "0x5A3598303ab723E557F577d40739062abD79d166" as Address,
 };
-
-// export const accentColor = "teal";
-export const accentColor = "iris";
-export const accentGradient = "bg-gradient-to-r from-blue-500 to-purple-500";
-
-type TagType = "announcement" | "vote" | "meme" | "news" | "first-post";
-
-type Tag = {
-  name: TagType;
-  color: BadgeProps["color"];
-};
-
-export const tags: Tag[] = [
-  {
-    name: "announcement",
-    color: "iris",
-  },
-  {
-    name: "vote",
-    color: "amber",
-  },
-  {
-    name: "meme",
-    color: "orange",
-  },
-  {
-    name: "news",
-    color: "pink",
-  },
-  {
-    name: "first-post",
-    color: "green",
-  },
-  ];

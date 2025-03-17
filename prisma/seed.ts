@@ -25,7 +25,6 @@ async function main() {
       tags: ["meme", "first-post", "ethereum"],
       upvotes: 1,
       downvotes: 0,
-      status: "confirmed",
       createdAt: new Date(Date.now() - 7 * ONE_DAY), // 7 days ago
       updatedAt: new Date(Date.now() - 7 * ONE_DAY),
     },
@@ -41,7 +40,6 @@ async function main() {
       tags: ["announcement", "news", "ethereum"],
       upvotes: 1,
       downvotes: 0,
-      status: "confirmed",
       createdAt: new Date(Date.now() - 3 * ONE_DAY), // 3 days ago
       updatedAt: new Date(Date.now() - 3 * ONE_DAY),
     },

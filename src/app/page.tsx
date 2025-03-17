@@ -1,20 +1,15 @@
-import { Flex, Heading, Container, Box } from "@radix-ui/themes";
+import { Heading, Container } from "@radix-ui/themes";
 import { getAll } from "@/lib/services/post";
 import PostList from "@/components/PostList";
 
 export default async function Home() {
-  // Fetch initial posts (first page)
-  console.log("Fetching posts...");
   const initialPosts = await getAll({ limit: 10 });
-
-  console.log("🚀 initialPosts length:", initialPosts?.length);
-  console.log("🚀 initialPosts:", initialPosts);
 
   return (
     <main>
       <Container size='3' py='6'>
-        <Heading size='8' mb='6'>
-          Message Board
+        <Heading size='5' mb='4'>
+          Recent Posts
         </Heading>
         <PostList initialPosts={initialPosts || []} />
       </Container>
@@ -22,5 +17,4 @@ export default async function Home() {
   );
 }
 
-// Revalidate every 30 seconds - a compromise between performance and freshness
 export const revalidate = 30;

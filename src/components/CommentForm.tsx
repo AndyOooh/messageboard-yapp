@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Button, TextArea, Flex } from "@radix-ui/themes";
-import { useAccount } from "wagmi"; // Assuming you're using wagmi for wallet connection
 import { useCommentMutations } from "@/hooks/useComments";
+import { useToken } from "@/providers/TokenProviders";
 
 type CommentFormProps = {
   postId: number;
@@ -14,21 +14,20 @@ export default function CommentForm({ postId, hasComments = false }: CommentForm
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const { address } = useAccount();
   const { create } = useCommentMutations();
+  const { tokenInfo } = useToken();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!content.trim() || !address) return;
+    if (!content.trim() || !tokenInfo?.ens) return;
 
     setIsSubmitting(true);
 
     try {
       await create.mutateAsync({
         content,
-        // creatorEns: address, //should be ENS from jwt
-        creatorEns: "willywonka.eth",
+        creatorEns: tokenInfo.ens,
         postId,
       });
 
@@ -58,7 +57,7 @@ export default function CommentForm({ postId, hasComments = false }: CommentForm
         <Button variant='soft' onClick={() => setIsFormVisible(false)}>
           Cancel
         </Button>
-        <Button type='submit' disabled={!content.trim() || isSubmitting || !address}>
+        <Button type='submit' disabled={!content.trim() || isSubmitting}>
           {isSubmitting ? "Posting..." : "Post Comment"}
         </Button>
       </Flex>

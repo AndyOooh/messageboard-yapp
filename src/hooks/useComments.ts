@@ -1,13 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-// Query keys
 export const commentKeys = {
   all: ["comments"] as const,
   byPost: (postId: number) => [...commentKeys.all, "post", postId] as const,
   detail: (id: number) => [...commentKeys.all, "detail", id] as const,
 };
 
-// API client functions
 const commentApi = {
   getByPostId: async (postId: number, options?: { limit?: number; offset?: number }) => {
     const params = new URLSearchParams();
@@ -33,7 +31,6 @@ const commentApi = {
   },
 };
 
-// Individual hooks for queries
 export function useGetCommentsByPostId(postId: number | undefined, options?: Parameters<typeof commentApi.getByPostId>[1]) {
   return useQuery({
     queryKey: [...commentKeys.byPost(postId || 0), options],
@@ -42,7 +39,6 @@ export function useGetCommentsByPostId(postId: number | undefined, options?: Par
   });
 }
 
-// Hook for mutations
 export function useCommentMutations() {
   const queryClient = useQueryClient();
 
@@ -55,6 +51,5 @@ export function useCommentMutations() {
 
   return {
     create,
-    // Add other mutations as needed
   };
 }
