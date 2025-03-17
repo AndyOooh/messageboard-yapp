@@ -32,12 +32,12 @@ function TokenProviderInner({ children }: { children: ReactNode }) {
     const verifyJWT = async () => {
       const jwt = searchParams.get("jwt");
 
-      if (process.env.NODE_ENV === "production") {
-        localStorage.setItem("tokenInfo", JSON.stringify(testTokenInfo));
-        setTokenInfo(testTokenInfo as JWTPayload);
-        setIsLoading(false);
-        return;
-      }
+      // if (process.env.NODE_ENV === "production") {
+      //   localStorage.setItem("tokenInfo", JSON.stringify(testTokenInfo));
+      //   setTokenInfo(testTokenInfo as JWTPayload);
+      //   setIsLoading(false);
+      //   return;
+      // }
 
       if (jwt) {
         try {
