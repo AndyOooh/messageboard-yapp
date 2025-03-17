@@ -9,7 +9,7 @@ Payload:
 ```json copy
 {
   "sub": "0x3BEC0A9CeCAd6315860067325c603861adf740b5",
-  "ens": "andyoee.yodl.me",
+  "ens": "vitalik.eth",
   "iss": "community.yodl.eth",
   "aud": "messageboard-yapp.yodl.eth",
   "exp": 1893456000,
