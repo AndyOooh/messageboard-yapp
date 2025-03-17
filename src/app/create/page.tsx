@@ -24,9 +24,9 @@ export default function CreatePostPage() {
 
   const { create, update } = usePostMutations();
 
-  if (!tokenInfo) {
-    return <div>Loading...</div>; // Should say "Please connect through the Yodl super app to create a post"
-  }
+  // if (!tokenInfo) {
+  //   return <div>Loading...</div>; // Should say "Please connect through the Yodl super app to create a post"
+  // }
 
   const getPayment = async (txHash: string): Promise<PaymentSimple> => {
     const INDEXER_URL = "https://tx.yodl.me/api/v1";
@@ -36,7 +36,7 @@ export default function CreatePostPage() {
   };
 
   const validatePayment = (payment: PaymentSimple) => {
-    if (payment.receiverEnsPrimaryName !== tokenInfo.iss) throw new Error("Verfication failed: Receiver ENS does not match");
+    if (payment.receiverEnsPrimaryName !== tokenInfo?.iss) throw new Error("Verfication failed: Receiver ENS does not match");
     if (!isAddressEqual(payment.receiverAddress as Address, CONFIG.COMMUNITY_ADDRESS))
       throw new Error("Verfication failed: Receiver address does not match");
     if (Number(payment.invoiceAmount) < CONFIG.POST_FEE.amount) throw new Error("Verfication failed: Amount is too small");
@@ -71,7 +71,7 @@ export default function CreatePostPage() {
 
       // Step 1: Create the initial post (without txHash, paid=false)
       const postData = {
-        creatorEns: tokenInfo.ens || "",
+        creatorEns: tokenInfo?.ens || "",
         header: formData.header,
         content: formData.content,
         tags: formData.tags,
@@ -164,7 +164,7 @@ export default function CreatePostPage() {
               <Button type='button' variant='soft' onClick={() => router.push("/")} disabled={paymentStatus !== null}>
                 Cancel
               </Button>
-              <Button type='submit' disabled={paymentStatus !== null || !isFormValid()}>
+              <Button type='submit' disabled={!tokenInfo || paymentStatus !== null || !isFormValid()}>
                 {paymentStatus === "submitting" ? "Subimitting..." : paymentStatus === "verifying" ? "Verifying..." : "Create Post"}
               </Button>
             </Flex>

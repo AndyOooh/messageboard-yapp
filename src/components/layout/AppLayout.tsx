@@ -1,6 +1,7 @@
 import { Container, Flex } from "@radix-ui/themes";
 import { Header } from "./Header";
 import { GrainyFilter } from "./GrainyFilter";
+import { NoTokenCallOut } from "./NoTokenCallOut";
 
 type AppLayoutProps = {
   children: React.ReactNode;
@@ -17,7 +18,10 @@ export function AppLayout({ children }: AppLayoutProps) {
       <Header />
       <Container size='1' mt='4'>
         <Flex direction='column' minHeight='100vh'>
-          <main className='mb-16 px-4'>{children}</main>
+          <main className='mb-16 px-4'>
+            <NoTokenCallOut />
+            {children}
+          </main>
         </Flex>
       </Container>
     </>

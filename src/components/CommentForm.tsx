@@ -57,7 +57,7 @@ export default function CommentForm({ postId, hasComments = false }: CommentForm
         <Button variant='soft' onClick={() => setIsFormVisible(false)}>
           Cancel
         </Button>
-        <Button type='submit' disabled={!content.trim() || isSubmitting}>
+        <Button type='submit' disabled={!tokenInfo || !content.trim() || isSubmitting}>
           {isSubmitting ? "Posting..." : "Post Comment"}
         </Button>
       </Flex>

@@ -7,7 +7,7 @@ export default async function Home() {
 
   return (
     <main>
-      <Container size='3' py='6'>
+      <Container size='3' mt='4'>
         <Heading size='5' mb='4'>
           Recent Posts
         </Heading>
