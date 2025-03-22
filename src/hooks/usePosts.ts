@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import type { Post, Vote, Comment } from "@prisma/client";
+import type { Post } from "@prisma/client";
+import { PostExtended } from "@/types";
 
 type PostCreateInput = {
   creatorEns: string;
@@ -23,13 +24,13 @@ const apiClient = {
 
     const response = await fetch(`/api/posts?${params.toString()}`);
     if (!response.ok) throw new Error("Failed to fetch posts");
-    return response.json() as Promise<Post[]>;
+    return response.json() as Promise<PostExtended[]>;
   },
 
   getPostById: async (id: number) => {
     const response = await fetch(`/api/posts/${id}`);
     if (!response.ok) throw new Error("Failed to fetch post");
-    return response.json() as Promise<Post>;
+    return response.json() as Promise<PostExtended>;
   },
 
   createPost: async (data: PostCreateInput) => {

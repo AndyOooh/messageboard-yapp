@@ -12,15 +12,6 @@ type TokenContextType = {
   isLoading: boolean;
 };
 
-const testTokenInfo = {
-  sub: "0x3BEC0A9CeCAd6315860067325c603861adf740b5",
-  ens: "vitalik.eth",
-  iss: "community.yodl.eth",
-  aud: "messageboard-yapp.yodl.eth",
-  exp: 1893456000,
-  "some-claim": "some-value",
-};
-
 const TokenContext = createContext<TokenContextType | undefined>(undefined);
 
 function TokenProviderInner({ children }: { children: ReactNode }) {
@@ -31,13 +22,6 @@ function TokenProviderInner({ children }: { children: ReactNode }) {
   useEffect(() => {
     const verifyJWT = async () => {
       const jwt = searchParams.get("jwt");
-
-      // if (process.env.NODE_ENV === "production") {
-      //   localStorage.setItem("tokenInfo", JSON.stringify(testTokenInfo));
-      //   setTokenInfo(testTokenInfo as JWTPayload);
-      //   setIsLoading(false);
-      //   return;
-      // }
 
       if (jwt) {
         try {

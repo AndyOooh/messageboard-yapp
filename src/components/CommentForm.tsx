@@ -31,9 +31,7 @@ export default function CommentForm({ postId, hasComments = false }: CommentForm
         postId,
       });
 
-      // Clear form after successful submission
       setContent("");
-      // Hide the form after successful submission
       setIsFormVisible(false);
     } catch (error) {
       console.error("Failed to submit comment:", error);

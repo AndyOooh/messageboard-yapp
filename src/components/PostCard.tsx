@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Card, Flex, Text, Heading, Badge, Box, Button, Avatar } from "@radix-ui/themes";
+import { Flex, Text, Heading, Badge, Box, Button, Avatar } from "@radix-ui/themes";
 import { formatDistanceToNow } from "date-fns";
 import CommentList from "@/components/CommentList";
 import { PostExtended } from "@/types";
 import { useVote } from "@/hooks/useVotes";
 import Link from "next/link";
-import { tags } from "@/constants";
+import { accentColor, tags } from "@/constants";
+import { MdChatBubbleOutline, MdOutlineThumbDown, MdOutlineThumbUp } from "react-icons/md";
+import { getEnsOrTruncatedAddress } from "@/lib/utils";
 
 type PostCardProps = {
   post: PostExtended;
@@ -17,15 +19,7 @@ export default function PostCard({ post: initialPost }: PostCardProps) {
   const [post, setPost] = useState(initialPost);
   const { mutate: vote, isPending } = useVote();
   const [showComments, setShowComments] = useState(false);
-  const [commentsLoaded, setCommentsLoaded] = useState(false);
   const [currentUserEns] = useState("demo.eth"); // Replace with actual user ENS
-
-  const toggleComments = () => {
-    setShowComments(!showComments);
-    if (!commentsLoaded && !showComments) {
-      setCommentsLoaded(true);
-    }
-  };
 
   const userVote = post.votes?.find(v => v.voterEns === currentUserEns);
 
@@ -47,13 +41,13 @@ export default function PostCard({ post: initialPost }: PostCardProps) {
   };
 
   return (
-    <Card>
+    <Box p='4' className='bg-[var(--accent-3)] rounded-2xl'>
       <Flex direction='column' gap='3'>
         <Flex justify='between' align='center'>
           <Flex align='center' gap='2'>
             <Avatar fallback={post.creatorEns.substring(0, 2)} size='2' />
             <Text size='2' color='gray'>
-              {post.creatorEns}
+              {getEnsOrTruncatedAddress(post.creatorEns)}
             </Text>
           </Flex>
           <Text size='1' color='gray'>
@@ -61,11 +55,12 @@ export default function PostCard({ post: initialPost }: PostCardProps) {
           </Text>
         </Flex>
 
-        {/* Make only the title and content clickable */}
-        <Link href={`/post/${post.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-          <Box style={{ cursor: "pointer" }}>
+        <Link href={`/post/${post.id}`}>
+          <Box>
             <Heading size='4'>{post.header}</Heading>
-            <Text>{post.content}</Text>
+            <Text color='gray' size='2'>
+              {post.content}
+            </Text>
           </Box>
         </Link>
 
@@ -80,25 +75,27 @@ export default function PostCard({ post: initialPost }: PostCardProps) {
         <Flex justify='between' align='center'>
           <Flex gap='3'>
             <Button variant='ghost' onClick={() => handleVote("up")} color={userVote?.voteType === "up" ? "green" : "gray"} disabled={isPending}>
-              ↑ {post.upvotes}
+              <MdOutlineThumbUp />
+              {post.upvotes}
             </Button>
             <Button variant='ghost' onClick={() => handleVote("down")} color={userVote?.voteType === "down" ? "red" : "gray"} disabled={isPending}>
-              ↓ {post.downvotes}
+              <MdOutlineThumbDown />
+              {post.downvotes}
             </Button>
           </Flex>
 
-          <Button variant='ghost' onClick={toggleComments}>
-            {showComments ? "Hide Comments" : `Show Comments (${post._count?.comments || 0})`}
+          <Button variant='ghost' onClick={() => setShowComments(!showComments)}>
+            <MdChatBubbleOutline color={showComments ? "" : accentColor} />
+            {post._count?.comments || 0}
           </Button>
         </Flex>
 
-        {/* Lazy load comments only when expanded */}
-        {showComments && commentsLoaded && (
+        {showComments && (
           <Box pt='2'>
-            <CommentList postId={post.id} />
+            <CommentList comments={post.comments || []} />
           </Box>
         )}
       </Flex>
-    </Card>
+    </Box>
   );
 }
