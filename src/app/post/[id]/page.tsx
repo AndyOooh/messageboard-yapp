@@ -12,6 +12,7 @@ export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const posts = await getAll();
+  if (!posts) return [];
   return posts?.map(post => ({
     id: post.id.toString(),
   }));
