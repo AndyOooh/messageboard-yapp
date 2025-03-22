@@ -1,11 +1,10 @@
 "use client";
 
 import { useToken } from "@/providers/TokenProviders";
-import { Button, Code, DropdownMenu, Flex, Link, Text } from "@radix-ui/themes";
+import { Code, DropdownMenu, Flex, IconButton, Link, Text } from "@radix-ui/themes";
 import Image from "next/image";
 import { MdOutlinePersonOff, MdOutlinePersonOutline } from "react-icons/md";
-import { FaTwitter } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
+import { FaTwitter, FaGithub } from "react-icons/fa";
 
 const socials = [
   {
@@ -29,17 +28,17 @@ export const YodlButton = () => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Button variant='outline'>
+        <IconButton size='3' variant='soft' radius='full'>
           {tokenInfo ? (
             ensAvatar ? (
               <Image src={ensAvatar} alt='Account avatar' width={24} height={24} />
             ) : (
-              <MdOutlinePersonOutline size={24} />
+              <MdOutlinePersonOutline />
             )
           ) : (
-            <MdOutlinePersonOff size={24} />
+            <MdOutlinePersonOff />
           )}
-        </Button>
+        </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
         {tokenInfo ? (

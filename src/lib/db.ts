@@ -1,15 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 
-// Add prisma to the NodeJS global type
 declare global {
   // eslint-disable-next-line no-var
   var __db__: PrismaClient | undefined;
 }
-
-// PrismaClient is attached to the `global` object in development to prevent
-// exhausting your database connection limit.
-// Learn more: https://pris.ly/d/help/next-js-best-practices
-
 const prismaClientSingleton = () => {
   return new PrismaClient({
     log: ["info", "warn", "error"],

@@ -5,7 +5,6 @@ import { Box, Flex, Text } from "@radix-ui/themes";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { createContext, ReactNode, useCallback, useContext, useState } from "react";
 
-// Create a context to expose toast functions
 type ToastContextType = {
   success: (message: string) => void;
   error: (message: string) => void;
@@ -46,14 +45,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     if (!open) {
       setToasts(prev => prev.map(toast => (toast.id === id ? { ...toast, open: false } : toast)));
 
-      // Remove toast from state after animation completes
       setTimeout(() => {
         setToasts(prev => prev.filter(toast => toast.id !== id));
       }, 300);
     }
   }, []);
 
-  // Get color based on toast type
   const getAccentColor = (type: "success" | "error" | "info") => {
     switch (type) {
       case "success":

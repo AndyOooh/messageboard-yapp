@@ -8,6 +8,8 @@ import { accentColor } from "@/constants";
 import { ToastProvider } from "@/providers/ToastProvider";
 import { TokenProvider } from "@/providers/TokenProviders";
 import { TanStackProvider } from "@/providers/TanStackProvider";
+import { ThemeProvider as NextThemeProvider } from "next-themes";
+import { BackgroundProvider } from "@/components/layout/BackgroundProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,15 +32,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
+    <html lang='en' suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <TanStackProvider>
           <TokenProvider>
-            <Theme accentColor={accentColor} hasBackground={false} panelBackground='translucent' radius='medium' appearance='dark'>
-              <ToastProvider>
-                <AppLayout>{children}</AppLayout>
-              </ToastProvider>
-            </Theme>
+            <NextThemeProvider attribute='class' defaultTheme='system' enableSystem>
+              <Theme accentColor={accentColor} hasBackground={false} panelBackground='translucent' radius='large'>
+                <BackgroundProvider>
+                  <ToastProvider>
+                    <AppLayout>{children}</AppLayout>
+                  </ToastProvider>
+                </BackgroundProvider>
+              </Theme>
+            </NextThemeProvider>
           </TokenProvider>
         </TanStackProvider>
       </body>

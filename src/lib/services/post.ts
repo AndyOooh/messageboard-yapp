@@ -19,6 +19,9 @@ export async function getAll(options?: { limit?: number; offset?: number; orderB
           },
         },
         votes: true,
+        comments: {
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
 
@@ -32,6 +35,11 @@ export async function getById(id: number) {
   const post = await prisma.post.findUnique({
     where: { id },
     include: {
+      _count: {
+        select: {
+          comments: true,
+        },
+      },
       comments: {
         orderBy: { createdAt: "desc" },
       },
@@ -73,26 +81,4 @@ export async function remove(id: number) {
   return prisma.post.delete({
     where: { id },
   });
-}
-
-export async function getByCreator(creatorEns: string) {
-  const posts = await prisma.post.findMany({
-    where: { creatorEns },
-    orderBy: { createdAt: "desc" },
-  });
-
-  return posts;
-}
-
-export async function getByTags(tags: string[]) {
-  const posts = await prisma.post.findMany({
-    where: {
-      tags: {
-        hasSome: tags,
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
-
-  return posts;
 }

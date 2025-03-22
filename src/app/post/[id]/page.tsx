@@ -1,54 +1,46 @@
-"use client";
-
-import { useParams } from "next/navigation";
-import { Container, Box, Heading, Text } from "@radix-ui/themes";
+import { Container, Box, Heading } from "@radix-ui/themes";
 import PostCard from "@/components/PostCard";
 import CommentList from "@/components/CommentList";
-import { useGetPostById } from "@/hooks/usePosts";
 import CommentForm from "@/components/CommentForm";
-import { useGetCommentsByPostId } from "@/hooks/useComments";
+import { getAll, getById } from "@/lib/services/post";
+import { notFound } from "next/navigation";
 
-export default function PostPage() {
-  const params = useParams();
-  const postId = Number(params.id);
+// Set revalidation time (e.g., every 5 minutes)
+// Enable dynamic params for posts not pre-rendered
+export const revalidate = 300;
+export const dynamicParams = true;
 
-  const { data: post, isLoading: isLoadingPost, error: postError } = useGetPostById(postId);
-  const { data: comments, isLoading: isLoadingComments } = useGetCommentsByPostId(postId);
+export async function generateStaticParams() {
+  const posts = await getAll();
+  return posts?.map(post => ({
+    id: post.id.toString(),
+  }));
+}
 
-  if (isLoadingPost) {
-    return (
-      <Container size='2' py='6'>
-        <Text>Loading post...</Text>
-      </Container>
-    );
-  }
+type Params = { params: Promise<{ id: string }> };
 
-  if (postError || !post) {
-    return (
-      <Container size='2' py='6'>
-        <Text color='red'>{postError instanceof Error ? postError.message : "Post not found"}</Text>
-      </Container>
-    );
-  }
+export default async function PostPage({ params }: Params) {
+  const { id } = await params;
+  const postId = Number(id);
 
-  const hasComments = Boolean(comments && comments.length > 0);
+  const post = await getById(postId);
+  if (!post) return notFound();
+
+  const hasComments = post.comments && post.comments.length > 0;
 
   return (
     <Container size='2' py='6'>
       <Box mb='6'>
         <PostCard post={post} />
       </Box>
-
       <Box>
         <Heading size='4' mb='4'>
-          Comments
+          {post.comments?.length ? "Comments" : "No comments yet"}
         </Heading>
-
         <Box mb='4'>
           <CommentForm postId={postId} hasComments={hasComments} />
         </Box>
-
-        <CommentList postId={postId} />
+        <CommentList comments={post.comments || []} />
       </Box>
     </Container>
   );

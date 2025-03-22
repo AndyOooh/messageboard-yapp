@@ -1,4 +1,4 @@
-import { Heading, Container } from "@radix-ui/themes";
+import { Heading, Container, Text } from "@radix-ui/themes";
 import { getAll } from "@/lib/services/post";
 import PostList from "@/components/PostList";
 
@@ -8,9 +8,10 @@ export default async function Home() {
   return (
     <main>
       <Container size='3' mt='4'>
-        <Heading size='5' mb='4'>
-          Recent Posts
-        </Heading>
+        <Heading size='6'>Yodlboard</Heading>
+        <Text as='p' mb='3' color='gray'>
+          Decentralized community message board
+        </Text>
         <PostList initialPosts={initialPosts || []} />
       </Container>
     </main>
