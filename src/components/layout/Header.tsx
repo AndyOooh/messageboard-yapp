@@ -12,7 +12,7 @@ export function Header() {
         <ThemeToggle />
       </Flex>
       <Link href='/'>
-        <Image src='/yodl-logo2.png' alt='logo' width={52} height={52} className='rounded-full' />
+        <Image src='/yodl-logo.png' alt='logo' width={52} height={52} className='rounded-full' />
       </Link>
       <Flex gap='2' align='center' justify='end' className='flex-1'>
         <NextLink href='/create' passHref className='bg-gray-400 rounded-full'>
