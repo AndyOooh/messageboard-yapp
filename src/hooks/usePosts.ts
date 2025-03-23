@@ -29,7 +29,7 @@ const apiClient = {
   getPostById: async (id: number) => {
     const response = await fetch(`/api/posts/${id}`);
     if (!response.ok) throw new Error("Failed to fetch post");
-    return response.json() as Promise<PostExtended>;
+    return response.json() as Promise<PostExtended>;  
   },
 
   createPost: async (data: PostCreateInput) => {

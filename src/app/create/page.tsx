@@ -11,8 +11,9 @@ import { useUserContext } from "@/providers/UserContextProvider";
 
 export default function CreatePostPage() {
   const router = useRouter();
-  const { userContext, isLoading } = useUserContext();
   const toast = useToast();
+  const { userContext, isLoading } = useUserContext();
+  const { create, update } = usePostMutations();
   const [paymentStatus, setPaymentStatus] = useState<"submitting" | "verifying" | null>(null);
   const [formData, setFormData] = useState({
     header: "",
@@ -20,9 +21,7 @@ export default function CreatePostPage() {
     tags: [] as string[],
   });
 
-  const { create, update } = usePostMutations();
-
-  if (!userContext) return <div>Loading...</div>; // diff between loading and net set?
+  if (!userContext) return;
 
   const isFormValid = () => {
     return formData.header.trim() && formData.content.trim();

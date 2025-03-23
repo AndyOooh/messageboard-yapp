@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button, TextArea, Flex } from "@radix-ui/themes";
 import { useCommentMutations } from "@/hooks/useComments";
 import { useUserContext } from "@/providers/UserContextProvider";
+import { Address } from "viem";
 
 type CommentFormProps = {
   postId: number;
@@ -20,14 +21,15 @@ export default function CommentForm({ postId, hasComments = false }: CommentForm
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // if (!content.trim() || !tokenInfo?.ens) return;
+    if (!content.trim() || !userContext) return; // TDOD: Improve UX.
 
     setIsSubmitting(true);
 
     try {
       await create.mutateAsync({
         content,
-        creatorEns: "asdsad",
+        creatorEns: userContext?.primaryEnsName,
+        creatorAddress: userContext.address as Address,
         postId,
       });
 

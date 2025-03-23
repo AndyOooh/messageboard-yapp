@@ -6,6 +6,13 @@ export const commentKeys = {
   detail: (id: number) => [...commentKeys.all, "detail", id] as const,
 };
 
+type CreateCommentInput = {
+  content: string;
+  creatorAddress: string;
+  postId: number;
+  creatorEns?: string;
+};
+
 const commentApi = {
   getByPostId: async (postId: number, options?: { limit?: number; offset?: number }) => {
     const params = new URLSearchParams();
@@ -17,13 +24,14 @@ const commentApi = {
     return response.json();
   },
 
-  create: async (data: { content: string; creatorEns: string; postId: number }) => {
-    const response = await fetch(`/api/posts/${data.postId}/comments`, {
+  create: async ({ content, creatorAddress, postId, creatorEns }: CreateCommentInput) => {
+    const response = await fetch(`/api/posts/${postId}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        content: data.content,
-        creatorEns: data.creatorEns,
+        content,
+        creatorAddress,
+        creatorEns: creatorEns ?? null,
       }),
     });
     if (!response.ok) throw new Error("Failed to create comment");

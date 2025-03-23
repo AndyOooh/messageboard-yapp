@@ -30,15 +30,15 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
     }
 
-    const body = await request.json();
-    const { content, creatorEns } = body;
+    const { content, creatorEns, creatorAddress } = await request.json();
 
-    if (!content || !creatorEns) {
+    if (!content || !creatorAddress) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const comment = await CommentService.create({
       content,
+      creatorAddress,
       creatorEns,
       post: {
         connect: { id: postIdInt },

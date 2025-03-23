@@ -3,10 +3,7 @@ import { PaymentSimple } from "@/types";
 import { isAddressEqual } from "viem";
 import { Address } from "viem";
 
-/**
- * Validates if a payment is valid for post creation
- */
-export const validatePayment = (payment: PaymentSimple, receiverAddress: Address, postId: string): boolean => {
+export const verifyPayment = (payment: PaymentSimple, receiverAddress: Address, postId: string): boolean => {
   if (!isAddressEqual(payment.receiverAddress as Address, receiverAddress)) {
     throw new Error("Verification failed: Receiver address does not match");
   }
@@ -15,7 +12,7 @@ export const validatePayment = (payment: PaymentSimple, receiverAddress: Address
 
   if (payment.invoiceCurrency !== POST_FEE.currency) throw new Error(`Verification failed: Currency must be ${POST_FEE.currency}`);
 
-  //   if (postId && payment.memo !== postId) throw new Error("Verification failed: Memo does not match"); // TODO: retuyrn memo in indexerApi.
+  // if (postId && payment.memo !== postId) throw new Error("Verification failed: Memo does not match"); // TODO: retuyrn memo in indexerApi.
 
   return true;
 };

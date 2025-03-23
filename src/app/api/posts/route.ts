@@ -24,25 +24,20 @@ export async function GET(request: NextRequest) {
 // Add POST method to create a new post
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json();
+    const { creatorEns, creatorAddress, header, content, tags } = await request.json();
 
     // Validate required fields
-    if (!data.creatorAddress || !data.header || !data.content) {
+    if (!creatorAddress || !header || !content) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
-    // Ensure tags is an array
-    if (!Array.isArray(data.tags)) {
-      data.tags = [];
     }
 
     // Create the post
     const post = await PostService.create({
-      creatorEns: data.creatorEns,
-      creatorAddress: data.creatorAddress,
-      header: data.header,
-      content: data.content,
-      tags: data.tags,
+      creatorEns,
+      creatorAddress,
+      header,
+      content,
+      tags: Array.isArray(tags) ? tags : [],
       txHash: null,
       paid: false,
     });

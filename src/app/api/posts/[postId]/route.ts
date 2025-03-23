@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as PostService from "@/lib/services/post";
 import { getPayment } from "@/lib/services/indexerApi";
-import { validatePayment } from "./validatePayment";
+import { verifyPayment } from "./verifyPayment";
 import { sdk } from "@/lib/sdk";
+import { YODL_COMMUNITY_ADDRESS } from "@/constants";
 
 type RouteParams = { params: Promise<{ postId: string }> };
 
@@ -32,30 +33,22 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const { postId } = await params;
     const postIdInt = parseInt(postId);
+    const { txHash } = await request.json();
 
-    if (isNaN(postIdInt)) {
-      return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
-    }
+    if (isNaN(postIdInt)) return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
+    if (!txHash) return NextResponse.json({ error: "No txHash provided" }, { status: 400 });
 
-    const data = await request.json();
-
-    // Validate the data
-    if (Object.keys(data).length === 0) {
-      return NextResponse.json({ error: "No update data provided" }, { status: 400 });
-    }
-
-    const payment = await getPayment(data.txHash);
+    const payment = await getPayment(txHash);
     const { community } = await sdk.getUserContext();
-    const yodlCommunityAddress = "0x0000000000000000000000000000000000000000";
-    const receiver = community?.address || yodlCommunityAddress;
-    const isValidPayment = validatePayment(payment, receiver, postId);
+    const receiver = community?.address || YODL_COMMUNITY_ADDRESS;
+    const isValidPayment = verifyPayment(payment, receiver, postId);
 
     if (!isValidPayment) {
       return NextResponse.json({ error: "Invalid payment" }, { status: 400 });
     }
 
     const updatedPost = await PostService.update(postIdInt, {
-      txHash: data.txHash,
+      txHash,
       paid: true,
     });
 
