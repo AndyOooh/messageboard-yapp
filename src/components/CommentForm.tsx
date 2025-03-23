@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button, TextArea, Flex } from "@radix-ui/themes";
 import { useCommentMutations } from "@/hooks/useComments";
-import { useToken } from "@/providers/TokenProviders";
+import { useUserContext } from "@/providers/UserContextProvider";
 
 type CommentFormProps = {
   postId: number;
@@ -15,19 +15,19 @@ export default function CommentForm({ postId, hasComments = false }: CommentForm
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const { create } = useCommentMutations();
-  const { tokenInfo } = useToken();
+  const { userContext } = useUserContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!content.trim() || !tokenInfo?.ens) return;
+    // if (!content.trim() || !tokenInfo?.ens) return;
 
     setIsSubmitting(true);
 
     try {
       await create.mutateAsync({
         content,
-        creatorEns: tokenInfo.ens,
+        creatorEns: "asdsad",
         postId,
       });
 
@@ -55,7 +55,7 @@ export default function CommentForm({ postId, hasComments = false }: CommentForm
         <Button variant='soft' onClick={() => setIsFormVisible(false)}>
           Cancel
         </Button>
-        <Button type='submit' disabled={!tokenInfo || !content.trim() || isSubmitting}>
+        <Button type='submit' disabled={!userContext || !content.trim() || isSubmitting}>
           {isSubmitting ? "Posting..." : "Post Comment"}
         </Button>
       </Flex>

@@ -41,9 +41,9 @@ export async function POST(request: NextRequest) {
       creatorEns: data.creatorEns,
       header: data.header,
       content: data.content,
-      txHash: data.txHash,
-      paid: data.paid ?? false,
       tags: data.tags,
+      txHash: null,
+      paid: false,
     });
 
     return NextResponse.json(post, { status: 201 });

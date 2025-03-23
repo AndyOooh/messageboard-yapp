@@ -4,12 +4,12 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppLayout } from "../components/layout/AppLayout";
 import { Theme } from "@radix-ui/themes";
-import { accentColor } from "@/constants";
+import { ACCENT_COLOR } from "@/constants";
 import { ToastProvider } from "@/providers/ToastProvider";
-import { TokenProvider } from "@/providers/TokenProviders";
 import { TanStackProvider } from "@/providers/TanStackProvider";
 import { ThemeProvider as NextThemeProvider } from "next-themes";
 import { BackgroundProvider } from "@/components/layout/BackgroundProvider";
+import { UserContextProvider } from "@/providers/UserContextProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,9 +35,9 @@ export default function RootLayout({
     <html lang='en' suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <TanStackProvider>
-          <TokenProvider>
+          <UserContextProvider>
             <NextThemeProvider attribute='class' defaultTheme='system' enableSystem>
-              <Theme accentColor={accentColor} hasBackground={false} panelBackground='translucent' radius='large'>
+              <Theme accentColor={ACCENT_COLOR} hasBackground={false} panelBackground='translucent' radius='large'>
                 <BackgroundProvider>
                   <ToastProvider>
                     <AppLayout>{children}</AppLayout>
@@ -45,7 +45,7 @@ export default function RootLayout({
                 </BackgroundProvider>
               </Theme>
             </NextThemeProvider>
-          </TokenProvider>
+          </UserContextProvider>
         </TanStackProvider>
       </body>
     </html>

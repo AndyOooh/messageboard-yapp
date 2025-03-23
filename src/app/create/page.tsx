@@ -4,16 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Button, Flex, Heading, Text, TextField, TextArea, Badge } from "@radix-ui/themes";
 import { useToast } from "@/providers/ToastProvider";
-import { CONFIG, tags } from "@/constants";
-import { useToken } from "@/providers/TokenProviders";
+import { POST_FEE, TAGS, YODL_COMMUNITY_ADDRESS } from "@/constants";
 import { sdk } from "@/lib/sdk";
 import { usePostMutations } from "@/hooks/usePosts";
-import { PaymentSimple } from "@/types";
-import { Address, isAddressEqual } from "viem";
+import { useUserContext } from "@/providers/UserContextProvider";
 
 export default function CreatePostPage() {
   const router = useRouter();
-  const { tokenInfo } = useToken();
+  const { userContext, isLoading } = useUserContext();
   const toast = useToast();
   const [paymentStatus, setPaymentStatus] = useState<"submitting" | "verifying" | null>(null);
   const [formData, setFormData] = useState({
@@ -24,25 +22,7 @@ export default function CreatePostPage() {
 
   const { create, update } = usePostMutations();
 
-  // if (!tokenInfo) {
-  //   return <div>Loading...</div>; // Should say "Please connect through the Yodl super app to create a post"
-  // }
-
-  const getPayment = async (txHash: string): Promise<PaymentSimple> => {
-    const INDEXER_URL = "https://tx.yodl.me/api/v1";
-    const response = await fetch(`${INDEXER_URL}/payments/${txHash}`);
-    const data = await response.json();
-    return data.payment;
-  };
-
-  const validatePayment = (payment: PaymentSimple) => {
-    if (payment.receiverEnsPrimaryName !== tokenInfo?.iss) throw new Error("Verfication failed: Receiver ENS does not match");
-    if (!isAddressEqual(payment.receiverAddress as Address, CONFIG.COMMUNITY_ADDRESS))
-      throw new Error("Verfication failed: Receiver address does not match");
-    if (Number(payment.invoiceAmount) < CONFIG.POST_FEE.amount) throw new Error("Verfication failed: Amount is too small");
-    if (payment.invoiceCurrency !== CONFIG.POST_FEE.currency) throw new Error(`Verfication failed: Currency must be ${CONFIG.POST_FEE.currency}`);
-    // if (payment.memo !== postId) throw new Error("Memo does not match") // memo not available in PaymentSimple.
-  };
+  if (!userContext) return <div>Loading...</div>; // diff between loading and net set?
 
   const isFormValid = () => {
     return formData.header.trim() && formData.content.trim();
@@ -71,34 +51,27 @@ export default function CreatePostPage() {
 
       // Step 1: Create the initial post (without txHash, paid=false)
       const postData = {
-        creatorEns: tokenInfo?.ens || "",
+        creatorEns: userContext?.primaryEnsName || userContext?.address,
         header: formData.header,
         content: formData.content,
         tags: formData.tags,
-        paid: false,
       };
       const newPost = await create.mutateAsync(postData);
 
+      const receiverAddress = userContext.community?.address || YODL_COMMUNITY_ADDRESS;
+
       // Step 2: Request payment with the post ID
-      const { txHash } = await sdk.requestPayment(CONFIG.COMMUNITY_ADDRESS, {
-        amount: CONFIG.POST_FEE.amount,
-        currency: CONFIG.POST_FEE.currency,
+      const { txHash } = await sdk.requestPayment(receiverAddress, {
+        amount: POST_FEE.amount,
+        currency: POST_FEE.currency,
         memo: newPost.id.toString(),
       });
       setPaymentStatus("verifying");
 
-      const indexedPayment = await getPayment(txHash);
-      console.log("🚀 indexedPayment:", indexedPayment);
-
-      validatePayment(indexedPayment);
-
-      // Step 4: Update the post with the transaction hash and paid status
-      // TODO: Should we conditionally update/delete the post if payment fails?
       await update.mutateAsync({
         id: newPost.id,
         data: {
           txHash,
-          paid: true,
         },
       });
 
@@ -146,7 +119,7 @@ export default function CreatePostPage() {
               Tags
             </Text>
             <Flex wrap='wrap' gap='2' mb='2'>
-              {tags.map(tag => (
+              {TAGS.map(tag => (
                 <Badge
                   key={tag.name}
                   color={tag.color}
@@ -164,12 +137,12 @@ export default function CreatePostPage() {
               <Button type='button' variant='soft' onClick={() => router.push("/")} disabled={paymentStatus !== null}>
                 Cancel
               </Button>
-              <Button type='submit' disabled={!tokenInfo || paymentStatus !== null || !isFormValid()}>
+              <Button type='submit' disabled={!userContext || paymentStatus !== null || !isFormValid()}>
                 {paymentStatus === "submitting" ? "Subimitting..." : paymentStatus === "verifying" ? "Verifying..." : "Create Post"}
               </Button>
             </Flex>
             <Text size='1' color='gray' align='right'>
-              {`Posting fee: ${CONFIG.POST_FEE.amount} ${CONFIG.POST_FEE.currency}`}
+              {`Posting fee: ${POST_FEE.amount} ${POST_FEE.currency}`}
             </Text>
           </Flex>
         </Flex>

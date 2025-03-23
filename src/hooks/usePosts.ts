@@ -7,13 +7,12 @@ type PostCreateInput = {
   creatorEns: string;
   header: string;
   content: string;
-  txHash?: string;
-  paid: boolean;
   tags?: string[];
-  status?: string;
 };
 
-type PostUpdateInput = Partial<PostCreateInput>;
+type PostUpdateInput = {
+  txHash: string;
+};
 
 // API client functions
 const apiClient = {

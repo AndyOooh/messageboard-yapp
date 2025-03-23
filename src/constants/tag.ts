@@ -7,7 +7,7 @@ type Tag = {
   color: BadgeProps["color"];
 };
 
-export const tags: Tag[] = [
+export const TAGS: Tag[] = [
   {
     name: "announcement",
     color: "iris",

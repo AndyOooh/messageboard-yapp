@@ -7,7 +7,7 @@ import CommentList from "@/components/CommentList";
 import { PostExtended } from "@/types";
 import { useVote } from "@/hooks/useVotes";
 import Link from "next/link";
-import { accentColor, tags } from "@/constants";
+import { ACCENT_COLOR, TAGS } from "@/constants";
 import { MdChatBubbleOutline, MdOutlineThumbDown, MdOutlineThumbUp } from "react-icons/md";
 import { getEnsOrTruncatedAddress } from "@/lib/utils";
 
@@ -66,7 +66,7 @@ export default function PostCard({ post: initialPost }: PostCardProps) {
 
         <Flex gap='2' wrap='wrap'>
           {post.tags.map(tag => (
-            <Badge key={tag} variant='soft' color={tags.find(t => t.name === tag)?.color}>
+            <Badge key={tag} variant='soft' color={TAGS.find(t => t.name === tag)?.color}>
               {tag}
             </Badge>
           ))}
@@ -85,7 +85,7 @@ export default function PostCard({ post: initialPost }: PostCardProps) {
           </Flex>
 
           <Button variant='ghost' onClick={() => setShowComments(!showComments)}>
-            <MdChatBubbleOutline color={showComments ? "" : accentColor} />
+            <MdChatBubbleOutline color={showComments ? "" : ACCENT_COLOR} />
             {post._count?.comments || 0}
           </Button>
         </Flex>

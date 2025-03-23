@@ -1,8 +1,9 @@
-import { CONFIG } from "@/constants";
 import YappSDK from "@yodlpay/yapp-sdk";
 
+const devOrigin = "http://localhost:3001/";
+const prodOrigin = "https://dapp-git-sb-add-user-context-request-yodl.vercel.app/";
+
 export const sdk = new YappSDK({
-  ensName: CONFIG.YAPP_ENS_NAME!,
-  origin: CONFIG.IS_DEV ? "http://localhost:3001/" : CONFIG.PARENT_URL,
-  publicKey: process.env.NEXT_PUBLIC_YODL_PUBLIC_KEY,
+  ensName: "messageboard-yapp.yodl.eth",
+  origin: process.env.NODE_ENV === "development" ? devOrigin : prodOrigin,
 });

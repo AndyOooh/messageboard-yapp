@@ -1,13 +1,13 @@
 "use client";
 
-import { useToken } from "@/providers/TokenProviders";
+import { useUserContext } from "@/providers/UserContextProvider";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { Callout, Flex } from "@radix-ui/themes";
 
 export const NoTokenCallOut = () => {
-  const { tokenInfo } = useToken();
+  const { userContext } = useUserContext();
 
-  if (tokenInfo) return null;
+  if (userContext) return null;
 
   return (
     <Callout.Root size='1' color='red'>
