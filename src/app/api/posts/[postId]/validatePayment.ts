@@ -1,5 +1,5 @@
+import { POST_FEE } from "@/constants";
 import { PaymentSimple } from "@/types";
-import { CONFIG } from "@/constants";
 import { isAddressEqual } from "viem";
 import { Address } from "viem";
 
@@ -11,9 +11,9 @@ export const validatePayment = (payment: PaymentSimple, receiverAddress: Address
     throw new Error("Verification failed: Receiver address does not match");
   }
 
-  if (Number(payment.invoiceAmount) < CONFIG.POST_FEE.amount) throw new Error("Verification failed: Amount is too small");
+  if (Number(payment.invoiceAmount) < POST_FEE.amount) throw new Error("Verification failed: Amount is too small");
 
-  if (payment.invoiceCurrency !== CONFIG.POST_FEE.currency) throw new Error(`Verification failed: Currency must be ${CONFIG.POST_FEE.currency}`);
+  if (payment.invoiceCurrency !== POST_FEE.currency) throw new Error(`Verification failed: Currency must be ${POST_FEE.currency}`);
 
   //   if (postId && payment.memo !== postId) throw new Error("Verification failed: Memo does not match"); // TODO: retuyrn memo in indexerApi.
 
