@@ -2,15 +2,12 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Time constants
-const ONE_HOUR = 60 * 60 * 1000; // 1 hour in milliseconds
-const ONE_DAY = 24 * ONE_HOUR; // 1 day in milliseconds
+const ONE_HOUR = 60 * 60 * 1000;
+const ONE_DAY = 24 * ONE_HOUR;
 
 async function main() {
   // Clean the database first
-  await prisma.notification.deleteMany({});
   await prisma.vote.deleteMany({});
-  await prisma.badge.deleteMany({});
   await prisma.comment.deleteMany({});
   await prisma.post.deleteMany({});
 
@@ -18,7 +15,7 @@ async function main() {
   const post1 = await prisma.post.create({
     data: {
       creatorEns: "andyoee.yodl.eth",
-      creatorAddress: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045", // example address
+      creatorAddress: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
       header: "Exploring Web3 Development",
       content: "Web3 development is revolutionizing how we think about ownership and digital assets. In this post, I want to share my journey.",
       txHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
@@ -26,7 +23,7 @@ async function main() {
       tags: ["meme", "first-post", "ethereum"],
       upvotes: 1,
       downvotes: 0,
-      createdAt: new Date(Date.now() - 7 * ONE_DAY), // 7 days ago
+      createdAt: new Date(Date.now() - 7 * ONE_DAY),
       updatedAt: new Date(Date.now() - 7 * ONE_DAY),
     },
   });
@@ -34,7 +31,7 @@ async function main() {
   const post2 = await prisma.post.create({
     data: {
       creatorEns: "andyoee.eth",
-      creatorAddress: "0x71C7656EC7ab88b098defB751B7401B5f6d8976F", // example address
+      creatorAddress: "0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
       header: "The Future of Decentralized Finance",
       content: "DeFi is changing the financial landscape. Here are my thoughts on where we're headed and what challenges we need to overcome.",
       txHash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
@@ -42,7 +39,7 @@ async function main() {
       tags: ["announcement", "news", "ethereum"],
       upvotes: 1,
       downvotes: 0,
-      createdAt: new Date(Date.now() - 3 * ONE_DAY), // 3 days ago
+      createdAt: new Date(Date.now() - 3 * ONE_DAY),
       updatedAt: new Date(Date.now() - 3 * ONE_DAY),
     },
   });
@@ -52,6 +49,7 @@ async function main() {
     data: {
       postId: post1.id,
       creatorEns: "andyoee.eth",
+      creatorAddress: "0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
       content: "Great insights! I've been exploring similar concepts in my own projects.",
       createdAt: new Date(Date.now() - 6 * ONE_DAY),
       updatedAt: new Date(Date.now() - 6 * ONE_DAY),
@@ -62,6 +60,7 @@ async function main() {
     data: {
       postId: post2.id,
       creatorEns: "andyoee.yodl.eth",
+      creatorAddress: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
       content: "I agree with your assessment of DeFi challenges. Security remains a major concern.",
       createdAt: new Date(Date.now() - 2 * ONE_DAY),
       updatedAt: new Date(Date.now() - 2 * ONE_DAY),
@@ -84,56 +83,6 @@ async function main() {
       voterEns: "andyoee.yodl.eth",
       voteType: "up",
       createdAt: new Date(Date.now() - 1 * ONE_DAY),
-    },
-  });
-
-  // Create badges
-  const badge1 = await prisma.badge.create({
-    data: {
-      ensName: "andyoee.yodl.eth",
-      badgeType: "founding_poster",
-      awardedAt: new Date(Date.now() - 10 * ONE_DAY),
-    },
-  });
-
-  const badge2 = await prisma.badge.create({
-    data: {
-      ensName: "andyoee.eth",
-      badgeType: "thought_leader",
-      awardedAt: new Date(Date.now() - 8 * ONE_DAY),
-    },
-  });
-
-  // Create notifications
-  const notification1 = await prisma.notification.create({
-    data: {
-      ensName: "andyoee.yodl.eth",
-      postId: post1.id,
-      commentId: comment1.id,
-      eventType: "new_comment",
-      isRead: false,
-      createdAt: new Date(Date.now() - 6 * ONE_DAY),
-    },
-  });
-
-  const notification2 = await prisma.notification.create({
-    data: {
-      ensName: "andyoee.yodl.eth",
-      postId: post1.id,
-      eventType: "new_vote",
-      isRead: true,
-      createdAt: new Date(Date.now() - 5 * ONE_DAY),
-    },
-  });
-
-  const notification3 = await prisma.notification.create({
-    data: {
-      ensName: "andyoee.eth",
-      postId: post2.id,
-      commentId: comment2.id,
-      eventType: "new_comment",
-      isRead: false,
-      createdAt: new Date(Date.now() - 2 * ONE_DAY),
     },
   });
 

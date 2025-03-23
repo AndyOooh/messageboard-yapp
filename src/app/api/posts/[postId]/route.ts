@@ -83,7 +83,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // TODO use address instead of ens in Post
-    if (post.creatorEns !== address) {
+    if (post.creatorAddress !== address) {
       return NextResponse.json({ error: "You are not the creator of this post" }, { status: 403 });
     }
 

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     const data = await request.json();
 
     // Validate required fields
-    if (!data.creatorEns || !data.header || !data.content) {
+    if (!data.creatorAddress || !data.header || !data.content) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
     // Create the post
     const post = await PostService.create({
       creatorEns: data.creatorEns,
+      creatorAddress: data.creatorAddress,
       header: data.header,
       content: data.content,
       tags: data.tags,
