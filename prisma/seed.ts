@@ -18,6 +18,7 @@ async function main() {
   const post1 = await prisma.post.create({
     data: {
       creatorEns: "andyoee.yodl.eth",
+      creatorAddress: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045", // example address
       header: "Exploring Web3 Development",
       content: "Web3 development is revolutionizing how we think about ownership and digital assets. In this post, I want to share my journey.",
       txHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
@@ -33,6 +34,7 @@ async function main() {
   const post2 = await prisma.post.create({
     data: {
       creatorEns: "andyoee.eth",
+      creatorAddress: "0x71C7656EC7ab88b098defB751B7401B5f6d8976F", // example address
       header: "The Future of Decentralized Finance",
       content: "DeFi is changing the financial landscape. Here are my thoughts on where we're headed and what challenges we need to overcome.",
       txHash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
