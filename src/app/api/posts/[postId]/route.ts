@@ -62,12 +62,12 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { postId } = await params;
     const postIdInt = parseInt(postId);
+    const { creatorAddress } = await request.json();
 
     if (isNaN(postIdInt)) {
       return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
     }
 
-    const { address } = await sdk.getUserContext();
     const post = await PostService.getById(postIdInt);
 
     if (!post) {
@@ -75,7 +75,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // TODO use address instead of ens in Post
-    if (post.creatorAddress !== address) {
+    if (post.creatorAddress !== creatorAddress) {
       return NextResponse.json({ error: "You are not the creator of this post" }, { status: 403 });
     }
 

@@ -2,10 +2,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import type { Post } from "@prisma/client";
 import { PostExtended } from "@/types";
+import { Address } from "viem";
 
 type PostCreateInput = {
   creatorEns?: string;
-  creatorAddress: string;
+  creatorAddress: Address;
   header: string;
   content: string;
   tags?: string[];
@@ -13,7 +14,12 @@ type PostCreateInput = {
 
 type PostUpdateInput = {
   txHash: string;
-  feeAddress: string;
+  feeAddress: Address;
+};
+
+type PostDeleteInput = {
+  id: number;
+  creatorAddress: Address;
 };
 
 // API client functions
@@ -54,9 +60,11 @@ const apiClient = {
     return response.json() as Promise<Post>;
   },
 
-  deletePost: async (id: number) => {
+  deletePost: async ({ id, creatorAddress }: PostDeleteInput) => {
     const response = await fetch(`/api/posts/${id}`, {
       method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ creatorAddress }),
     });
     if (!response.ok) throw new Error("Failed to delete post");
     return response.json() as Promise<{ success: boolean }>;
@@ -108,7 +116,7 @@ export function usePostMutations() {
   });
 
   const remove = useMutation({
-    mutationFn: apiClient.deletePost,
+    mutationFn: ({ id, creatorAddress }: PostDeleteInput) => apiClient.deletePost({ id, creatorAddress }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: postKeys.lists() });
     },
