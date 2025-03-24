@@ -50,17 +50,18 @@ export default function CreatePostPage() {
 
       // Step 1: Create the initial post (without txHash, paid=false)
       const postData = {
-        creatorEns: userContext?.primaryEnsName || userContext?.address,
+        creatorEns: userContext.primaryEnsName,
+        creatorAddress: userContext.address,
         header: formData.header,
         content: formData.content,
         tags: formData.tags,
       };
       const newPost = await create.mutateAsync(postData);
 
-      const receiverAddress = userContext.community?.address || YODL_COMMUNITY_ADDRESS;
+      const feeAddress = userContext.community?.address || YODL_COMMUNITY_ADDRESS; // Security risk. Should be set on server side. 
 
       // Step 2: Request payment with the post ID
-      const { txHash } = await sdk.requestPayment(receiverAddress, {
+      const { txHash } = await sdk.requestPayment(feeAddress, {
         amount: POST_FEE.amount,
         currency: POST_FEE.currency,
         memo: newPost.id.toString(),
@@ -71,6 +72,7 @@ export default function CreatePostPage() {
         id: newPost.id,
         data: {
           txHash,
+          feeAddress,
         },
       });
 

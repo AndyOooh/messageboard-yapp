@@ -4,7 +4,8 @@ import type { Post } from "@prisma/client";
 import { PostExtended } from "@/types";
 
 type PostCreateInput = {
-  creatorEns: string;
+  creatorEns?: string;
+  creatorAddress: string;
   header: string;
   content: string;
   tags?: string[];
@@ -12,6 +13,7 @@ type PostCreateInput = {
 
 type PostUpdateInput = {
   txHash: string;
+  feeAddress: string;
 };
 
 // API client functions
@@ -29,7 +31,7 @@ const apiClient = {
   getPostById: async (id: number) => {
     const response = await fetch(`/api/posts/${id}`);
     if (!response.ok) throw new Error("Failed to fetch post");
-    return response.json() as Promise<PostExtended>;  
+    return response.json() as Promise<PostExtended>;
   },
 
   createPost: async (data: PostCreateInput) => {

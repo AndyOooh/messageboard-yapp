@@ -33,15 +33,14 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const { postId } = await params;
     const postIdInt = parseInt(postId);
-    const { txHash } = await request.json();
+    const { txHash, feeAddress } = await request.json();
 
     if (isNaN(postIdInt)) return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
     if (!txHash) return NextResponse.json({ error: "No txHash provided" }, { status: 400 });
 
     const payment = await getPayment(txHash);
-    const { community } = await sdk.getUserContext();
-    const receiver = community?.address || YODL_COMMUNITY_ADDRESS;
-    const isValidPayment = verifyPayment(payment, receiver, postId);
+
+    const isValidPayment = verifyPayment(payment, feeAddress, postId);
 
     if (!isValidPayment) {
       return NextResponse.json({ error: "Invalid payment" }, { status: 400 });
