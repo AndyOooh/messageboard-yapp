@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { Code, DropdownMenu, Flex, IconButton, Link, Skeleton, Text } from "@radix-ui/themes";
-import Image from "next/image";
-import { MdOutlinePersonOff, MdOutlinePersonOutline } from "react-icons/md";
-import { FaTwitter, FaGithub } from "react-icons/fa";
-import { useUserContext } from "@/providers/UserContextProvider";
+import { Code, DropdownMenu, Flex, IconButton, Link, Skeleton, Text } from '@radix-ui/themes';
+import Image from 'next/image';
+import { MdOutlinePersonOff, MdOutlinePersonOutline } from 'react-icons/md';
+import { FaTwitter, FaGithub } from 'react-icons/fa';
+import { useUserContext } from '@/providers/UserContextProvider';
 
 const socials = [
   {
     // label: "GitHub",
-    label: "yodlpay/messageboard-yapp",
-    href: "https://github.com/yodlpay/yappkit",
+    label: 'yodlpay/messageboard-yapp',
+    href: 'https://github.com/yodlpay/yappkit',
     icon: FaGithub,
   },
   {
     // label: "Twitter",
-    label: "@yodlpay",
-    href: "https://x.com/yodlpay",
+    label: '@yodlpay',
+    href: 'https://x.com/yodlpay',
     icon: FaTwitter,
   },
 ];
@@ -30,13 +30,13 @@ export const YodlButton = () => {
       <DropdownMenu.Trigger>
         {isLoading ? (
           <Skeleton>
-            <IconButton size='3' radius='full' />
+            <IconButton size="3" radius="full" />
           </Skeleton>
         ) : (
-          <IconButton size='3' variant='soft' radius='full'>
+          <IconButton size="3" variant="soft" radius="full">
             {userContext ? (
               ensAvatar ? (
-                <Image src={ensAvatar} alt='Account avatar' width={24} height={24} />
+                <Image src={ensAvatar} alt="Account avatar" width={24} height={24} />
               ) : (
                 <MdOutlinePersonOutline />
               )
@@ -84,10 +84,10 @@ export const YodlButton = () => {
 
             <DropdownMenu.Separator />
             <DropdownMenu.Label>Connect</DropdownMenu.Label>
-            {socials.map(social => (
+            {socials.map((social) => (
               <DropdownMenu.Item key={social.label}>
-                <Link href={social.href} target='_blank'>
-                  <Flex align='center' gap='2'>
+                <Link href={social.href} target="_blank">
+                  <Flex align="center" gap="2">
                     <social.icon size={16} />
                     <Text>{social.label}</Text>
                   </Flex>

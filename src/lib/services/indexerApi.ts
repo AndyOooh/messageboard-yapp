@@ -1,4 +1,4 @@
-import { PaymentSimple } from "@/types";
+import { PaymentSimple } from '@/types';
 
 /**
  * Fetches payment data from the Yodl indexer API
@@ -6,7 +6,7 @@ import { PaymentSimple } from "@/types";
  * @returns PaymentSimple - Payment information
  */
 export const getPayment = async (txHash: string): Promise<PaymentSimple> => {
-  const INDEXER_URL = "https://tx.yodl.me/api/v1";
+  const INDEXER_URL = 'https://tx.yodl.me/api/v1';
   const response = await fetch(`${INDEXER_URL}/payments/${txHash}`);
 
   if (!response.ok) {

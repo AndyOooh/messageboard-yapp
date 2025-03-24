@@ -1,8 +1,12 @@
-import { prisma } from "@/lib/db";
-import type { Prisma } from "@prisma/client";
+import { prisma } from '@/lib/db';
+import type { Prisma } from '@prisma/client';
 
-export async function getAll(options?: { limit?: number; offset?: number; orderBy?: Prisma.PostOrderByWithRelationInput }) {
-  const { limit = 10, offset = 0, orderBy = { createdAt: "desc" } } = options || {};
+export async function getAll(options?: {
+  limit?: number;
+  offset?: number;
+  orderBy?: Prisma.PostOrderByWithRelationInput;
+}) {
+  const { limit = 10, offset = 0, orderBy = { createdAt: 'desc' } } = options || {};
 
   try {
     const posts = await prisma.post.findMany({
@@ -20,14 +24,14 @@ export async function getAll(options?: { limit?: number; offset?: number; orderB
         },
         votes: true,
         comments: {
-          orderBy: { createdAt: "desc" },
+          orderBy: { createdAt: 'desc' },
         },
       },
     });
 
     return posts;
   } catch (error) {
-    console.error("Error fetching posts:", error);
+    console.error('Error fetching posts:', error);
   }
 }
 
@@ -41,7 +45,7 @@ export async function getById(id: number) {
         },
       },
       comments: {
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: 'desc' },
       },
       votes: true,
     },
@@ -56,13 +60,16 @@ export async function create(data: Prisma.PostCreateInput) {
   });
 
   try {
-    await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/revalidate?token=${process.env.REVALIDATION_TOKEN}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path: "/" }),
-    });
+    await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/revalidate?token=${process.env.REVALIDATION_TOKEN}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: '/' }),
+      },
+    );
   } catch (error) {
-    console.error("Failed to revalidate:", error);
+    console.error('Failed to revalidate:', error);
   }
 
   return post;

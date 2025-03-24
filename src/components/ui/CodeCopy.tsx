@@ -1,22 +1,22 @@
-import { CopyIcon } from "@radix-ui/react-icons";
-import { Code, Flex, IconButton } from "@radix-ui/themes";
+import { CopyIcon } from '@radix-ui/react-icons';
+import { Code, Flex, IconButton } from '@radix-ui/themes';
 
 type CodeCopyProps = {
   text: string;
   truncate?: boolean;
-  position?: "front" | "back";
-  justify?: "start" | "end" | "between";
+  position?: 'front' | 'back';
+  justify?: 'start' | 'end' | 'between';
 };
 
 export const CodeCopy = ({
   text,
   truncate,
-  position = "front",
-  justify = "between",
+  position = 'front',
+  justify = 'between',
 }: CodeCopyProps) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(text).catch((err) => {
-      console.error("Failed to copy text:", err);
+      console.error('Failed to copy text:', err);
     });
   };
 
@@ -34,9 +34,9 @@ export const CodeCopy = ({
 
   return (
     <Flex align="center" width="100%" gap="2" justify={justify}>
-      {position === "front" && code}
+      {position === 'front' && code}
       {copyButton}
-      {position === "back" && code}
+      {position === 'back' && code}
     </Flex>
   );
 };

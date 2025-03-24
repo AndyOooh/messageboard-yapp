@@ -1,5 +1,5 @@
-import { DotFilledIcon } from "@radix-ui/react-icons";
-import { Card, Flex, Text } from "@radix-ui/themes";
+import { DotFilledIcon } from '@radix-ui/react-icons';
+import { Card, Flex, Text } from '@radix-ui/themes';
 
 type CardListProps = {
   list: { title: string; text: string }[];

@@ -1,9 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const commentKeys = {
-  all: ["comments"] as const,
-  byPost: (postId: number) => [...commentKeys.all, "post", postId] as const,
-  detail: (id: number) => [...commentKeys.all, "detail", id] as const,
+  all: ['comments'] as const,
+  byPost: (postId: number) => [...commentKeys.all, 'post', postId] as const,
+  detail: (id: number) => [...commentKeys.all, 'detail', id] as const,
 };
 
 type CreateCommentInput = {
@@ -16,30 +16,33 @@ type CreateCommentInput = {
 const commentApi = {
   getByPostId: async (postId: number, options?: { limit?: number; offset?: number }) => {
     const params = new URLSearchParams();
-    if (options?.limit) params.append("limit", options.limit.toString());
-    if (options?.offset) params.append("offset", options.offset.toString());
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.offset) params.append('offset', options.offset.toString());
 
     const response = await fetch(`/api/posts/${postId}/comments?${params.toString()}`);
-    if (!response.ok) throw new Error("Failed to fetch comments");
+    if (!response.ok) throw new Error('Failed to fetch comments');
     return response.json();
   },
 
   create: async ({ content, creatorAddress, postId, creatorEns }: CreateCommentInput) => {
     const response = await fetch(`/api/posts/${postId}/comments`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         content,
         creatorAddress,
         creatorEns: creatorEns ?? null,
       }),
     });
-    if (!response.ok) throw new Error("Failed to create comment");
+    if (!response.ok) throw new Error('Failed to create comment');
     return response.json();
   },
 };
 
-export function useGetCommentsByPostId(postId: number | undefined, options?: Parameters<typeof commentApi.getByPostId>[1]) {
+export function useGetCommentsByPostId(
+  postId: number | undefined,
+  options?: Parameters<typeof commentApi.getByPostId>[1],
+) {
   return useQuery({
     queryKey: [...commentKeys.byPost(postId || 0), options],
     queryFn: () => commentApi.getByPostId(postId!, options),

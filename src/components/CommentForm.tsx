@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button, TextArea, Flex } from "@radix-ui/themes";
-import { useCommentMutations } from "@/hooks/useComments";
-import { useUserContext } from "@/providers/UserContextProvider";
-import { Address } from "viem";
+import { useState } from 'react';
+import { Button, TextArea, Flex } from '@radix-ui/themes';
+import { useCommentMutations } from '@/hooks/useComments';
+import { useUserContext } from '@/providers/UserContextProvider';
+import { Address } from 'viem';
 
 type CommentFormProps = {
   postId: number;
@@ -12,7 +12,7 @@ type CommentFormProps = {
 };
 
 export default function CommentForm({ postId, hasComments = false }: CommentFormProps) {
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const { create } = useCommentMutations();
@@ -33,10 +33,10 @@ export default function CommentForm({ postId, hasComments = false }: CommentForm
         postId,
       });
 
-      setContent("");
+      setContent('');
       setIsFormVisible(false);
     } catch (error) {
-      console.error("Failed to submit comment:", error);
+      console.error('Failed to submit comment:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -44,21 +44,29 @@ export default function CommentForm({ postId, hasComments = false }: CommentForm
 
   if (!isFormVisible) {
     return (
-      <Flex justify='center' mb='4'>
-        <Button onClick={() => setIsFormVisible(true)}>{hasComments ? "Join the conversation" : "Be the first to comment"}</Button>
+      <Flex justify="center" mb="4">
+        <Button onClick={() => setIsFormVisible(true)}>
+          {hasComments ? 'Join the conversation' : 'Be the first to comment'}
+        </Button>
       </Flex>
     );
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <TextArea placeholder='Add a comment...' value={content} onChange={e => setContent(e.target.value)} mb='2' size='3' />
-      <Flex justify='end' gap='2'>
-        <Button variant='soft' onClick={() => setIsFormVisible(false)}>
+      <TextArea
+        placeholder="Add a comment..."
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        mb="2"
+        size="3"
+      />
+      <Flex justify="end" gap="2">
+        <Button variant="soft" onClick={() => setIsFormVisible(false)}>
           Cancel
         </Button>
-        <Button type='submit' disabled={!userContext || !content.trim() || isSubmitting}>
-          {isSubmitting ? "Posting..." : "Post Comment"}
+        <Button type="submit" disabled={!userContext || !content.trim() || isSubmitting}>
+          {isSubmitting ? 'Posting...' : 'Post Comment'}
         </Button>
       </Flex>
     </form>

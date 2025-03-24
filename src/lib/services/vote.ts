@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/db";
-import type { Prisma } from "@prisma/client";
+import { prisma } from '@/lib/db';
+import type { Prisma } from '@prisma/client';
 
 export async function getVoteByUserAndPost(postId: number, voterEns: string) {
   return prisma.vote.findFirst({
@@ -10,9 +10,9 @@ export async function getVoteByUserAndPost(postId: number, voterEns: string) {
   });
 }
 
-export async function upsertVote(postId: number, voterEns: string, voteType: "up" | "down") {
+export async function upsertVote(postId: number, voterEns: string, voteType: 'up' | 'down') {
   // Use transaction to ensure vote and post updates are atomic
-  return prisma.$transaction(async tx => {
+  return prisma.$transaction(async (tx) => {
     const existingVote = await tx.vote.findFirst({
       where: { postId, voterEns },
     });
@@ -28,7 +28,7 @@ export async function upsertVote(postId: number, voterEns: string, voteType: "up
         await tx.post.update({
           where: { id: postId },
           data: {
-            [voteType === "up" ? "upvotes" : "downvotes"]: {
+            [voteType === 'up' ? 'upvotes' : 'downvotes']: {
               decrement: 1,
             },
           },
@@ -44,8 +44,8 @@ export async function upsertVote(postId: number, voterEns: string, voteType: "up
         await tx.post.update({
           where: { id: postId },
           data: {
-            [voteType === "up" ? "upvotes" : "downvotes"]: { increment: 1 },
-            [voteType === "up" ? "downvotes" : "upvotes"]: { decrement: 1 },
+            [voteType === 'up' ? 'upvotes' : 'downvotes']: { increment: 1 },
+            [voteType === 'up' ? 'downvotes' : 'upvotes']: { decrement: 1 },
           },
         });
       }
@@ -63,7 +63,7 @@ export async function upsertVote(postId: number, voterEns: string, voteType: "up
       await tx.post.update({
         where: { id: postId },
         data: {
-          [voteType === "up" ? "upvotes" : "downvotes"]: {
+          [voteType === 'up' ? 'upvotes' : 'downvotes']: {
             increment: 1,
           },
         },

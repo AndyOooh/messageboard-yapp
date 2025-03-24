@@ -1,4 +1,4 @@
-import { Flex, Spinner } from "@radix-ui/themes";
+import { Flex, Spinner } from '@radix-ui/themes';
 
 export function FullScreenLoader() {
   return (
