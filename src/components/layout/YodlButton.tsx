@@ -9,8 +9,8 @@ import { useUserContext } from '@/providers/UserContextProvider';
 const socials = [
   {
     // label: "GitHub",
-    label: 'yodlpay/messageboard-yapp',
-    href: 'https://github.com/yodlpay/yappkit',
+    label: 'AndyOooh/messageboard-yapp',
+    href: 'https://github.com/AndyOooh/messageboard-yapp',
     icon: FaGithub,
   },
   {

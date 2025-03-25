@@ -51,7 +51,7 @@ export default function PostCard({ post: initialPost }: PostCardProps) {
               {post.creatorEns ?? truncateAddress(post.creatorAddress)}
             </Text>
           </Flex>
-          <Text size="1" color="gray">
+          <Text size="1" color="gray" align="right">
             {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
           </Text>
         </Flex>

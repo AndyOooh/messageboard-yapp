@@ -4,14 +4,19 @@ import { sdk } from '@/lib/sdk';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { UserContext as UserContextType } from '@yodlpay/yapp-sdk';
 
-const UserContext = createContext<UserContextType | null>(null);
+type UserContextWithLoading = {
+  userContext: UserContextType | null;
+  isLoading: boolean;
+};
+
+const UserContext = createContext<UserContextWithLoading | undefined>(undefined);
 
 export function useUserContext() {
   const context = useContext(UserContext);
   if (context === undefined) {
     throw new Error('useUserContext must be used within a UserContextProvider');
   }
-  return { userContext: context, isLoading: context === null };
+  return context;
 }
 
 export function UserContextProvider({ children }: { children: React.ReactNode }) {
@@ -33,5 +38,5 @@ export function UserContextProvider({ children }: { children: React.ReactNode })
     fetchUserContext();
   }, []);
 
-  return <UserContext.Provider value={userContext}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ userContext, isLoading }}>{children}</UserContext.Provider>;
 }
