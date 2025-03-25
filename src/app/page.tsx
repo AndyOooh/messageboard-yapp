@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Heading, Container, Text } from '@radix-ui/themes';
 import { getAll } from '@/lib/services/post';
 import PostList from '@/components/PostList';
@@ -18,5 +20,3 @@ export default async function Home() {
     </main>
   );
 }
-
-export const revalidate = 30;
