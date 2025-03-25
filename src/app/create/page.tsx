@@ -94,7 +94,8 @@ export default function CreatePostPage() {
       toast.error(errorMessage);
     } finally {
       setPaymentStatus(null);
-      router.push('/');
+      window.location.href = '/';
+      // router.push('/');
     }
   };
 
