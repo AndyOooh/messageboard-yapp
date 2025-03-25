@@ -68,9 +68,10 @@ export async function update(id: number, data: Prisma.PostUpdateInput) {
     where: { id },
     data,
   });
+  console.log('🚀 post:', post);
 
   // Only trigger revalidation if the post is being marked as paid
-  if (post.paid === true) {
+  if (data.paid === true) {
     try {
       const revalidateUrl = `${YAPP_URL}/api/revalidate`;
       await fetch(`${revalidateUrl}?token=${process.env.REVALIDATION_TOKEN}`, {
