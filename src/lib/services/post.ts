@@ -64,22 +64,33 @@ export async function create(data: Prisma.PostCreateInput) {
 }
 
 export async function update(id: number, data: Prisma.PostUpdateInput) {
+  // Check if we're trying to set paid to true
+  const isMarkingAsPaid = data.paid === true;
+
+  // Update the database
   const post = await prisma.post.update({
     where: { id },
     data,
   });
-  console.log('🚀 post:', post);
 
-  // Only trigger revalidation if the post is being marked as paid
-  if (data.paid === true) {
+  // Trigger revalidation if we're marking as paid
+  if (isMarkingAsPaid) {
     try {
+      console.log('Triggering revalidation for newly paid post:', id);
       const revalidateUrl = `${YAPP_URL}/api/revalidate`;
-      await fetch(`${revalidateUrl}?token=${process.env.REVALIDATION_TOKEN}`, {
+      const response = await fetch(`${revalidateUrl}?token=${process.env.REVALIDATION_TOKEN}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path: '/' }),
         cache: 'no-store',
       });
+
+      const result = await response.json();
+      console.log('Revalidation response:', result);
+
+      if (!response.ok) {
+        console.error('Revalidation failed with status:', response.status);
+      }
     } catch (error) {
       console.error('Failed to revalidate:', error);
     }
