@@ -7,6 +7,8 @@ type Tag = {
   color: BadgeProps['color'];
 };
 
+// Available tags for posts
+// You can add, remove, or modify these tags to suit your community
 export const TAGS: Tag[] = [
   {
     name: 'announcement',
