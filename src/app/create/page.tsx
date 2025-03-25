@@ -12,6 +12,7 @@ import {
   TextArea,
   Badge,
   Callout,
+  Spinner,
 } from '@radix-ui/themes';
 import { useToast } from '@/providers/ToastProvider';
 import { POST_FEE, TAGS } from '@/constants';
@@ -104,12 +105,12 @@ export default function CreatePostPage() {
       </Heading>
 
       {paymentStatus === 'verifying' ? (
-        <Flex justify="center" align="center" height="100%">
-          <Callout.Root>
+        <Flex justify="center" align="center" height="50vh">
+          <Callout.Root size="2">
             <Callout.Icon>
-              <InfoCircledIcon />
+              <Spinner />
             </Callout.Icon>
-            <Callout.Text>Verifying payment...</Callout.Text>
+            <Callout.Text>Verifying payment</Callout.Text>
           </Callout.Root>
         </Flex>
       ) : (
