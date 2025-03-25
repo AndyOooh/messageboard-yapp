@@ -2,13 +2,24 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Box, Button, Flex, Heading, Text, TextField, TextArea, Badge } from '@radix-ui/themes';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Text,
+  TextField,
+  TextArea,
+  Badge,
+  Callout,
+} from '@radix-ui/themes';
 import { useToast } from '@/providers/ToastProvider';
 import { POST_FEE, TAGS } from '@/constants';
 import { sdk } from '@/lib/sdk';
 import { usePostMutations } from '@/hooks/usePosts';
 import { useUserContext } from '@/providers/UserContextProvider';
 import { Address } from 'viem';
+import { InfoCircledIcon } from '@radix-ui/react-icons';
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -75,7 +86,6 @@ export default function CreatePostPage() {
       });
 
       toast.success('Post created successfully!');
-      router.push('/');
     } catch (error) {
       console.error('Error creating post:', error);
       const errorMessage =
@@ -83,6 +93,7 @@ export default function CreatePostPage() {
       toast.error(errorMessage);
     } finally {
       setPaymentStatus(null);
+      router.push('/');
     }
   };
 
@@ -92,94 +103,105 @@ export default function CreatePostPage() {
         Create a Post
       </Heading>
 
-      <form onSubmit={handleSubmit}>
-        <Flex direction="column" gap="4">
-          <Box>
-            <Text as="label" size="2" mb="1" weight="bold">
-              Title*
-            </Text>
-            <TextField.Root
-              name="header"
-              value={formData.header}
-              onChange={handleChange}
-              placeholder="Title"
-              size="3"
-              maxLength={100}
-              required
-            />
-            <Text size="1" color="gray">
-              {formData.header.length}/100
-            </Text>
-          </Box>
-
-          <Box>
-            <Text as="label" size="2" mb="1" weight="bold">
-              Content*
-            </Text>
-            <TextArea
-              name="content"
-              value={formData.content}
-              onChange={handleChange}
-              placeholder="Text"
-              size="3"
-              maxLength={280}
-              required
-            />
-            <Text size="1" color="gray">
-              {formData.content.length}/280
-            </Text>
-          </Box>
-
-          <Box>
-            <Text as="label" size="2" mb="1" weight="bold">
-              Tags
-            </Text>
-            <Flex wrap="wrap" gap="2" mb="2">
-              {TAGS.map((tag) => (
-                <Badge
-                  key={tag.name}
-                  color={tag.color}
-                  size="2"
-                  onClick={() => handleTagChange(tag.name)}
-                  className={
-                    formData.tags.includes(tag.name)
-                      ? 'border'
-                      : 'border border-transparent opacity-60'
-                  }
-                >
-                  {tag.name}
-                </Badge>
-              ))}
-            </Flex>
-          </Box>
-
-          <Flex direction="column" gap="2" mt="4">
-            <Flex gap="3" justify="end">
-              <Button
-                type="button"
-                variant="soft"
-                onClick={() => router.push('/')}
-                disabled={paymentStatus !== null}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={!userContext || paymentStatus !== null || !isFormValid()}
-              >
-                {paymentStatus === 'submitting'
-                  ? 'Subimitting...'
-                  : paymentStatus === 'verifying'
-                  ? 'Verifying...'
-                  : 'Create Post'}
-              </Button>
-            </Flex>
-            <Text size="1" color="gray" align="right">
-              {`Posting fee: ${POST_FEE.amount} ${POST_FEE.currency}`}
-            </Text>
-          </Flex>
+      {paymentStatus === 'verifying' ? (
+        <Flex justify="center" align="center" height="100%">
+          <Callout.Root>
+            <Callout.Icon>
+              <InfoCircledIcon />
+            </Callout.Icon>
+            <Callout.Text>Verifying payment...</Callout.Text>
+          </Callout.Root>
         </Flex>
-      </form>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <Flex direction="column" gap="4">
+            <Box>
+              <Text as="label" size="2" mb="1" weight="bold">
+                Title*
+              </Text>
+              <TextField.Root
+                name="header"
+                value={formData.header}
+                onChange={handleChange}
+                placeholder="Title"
+                size="3"
+                maxLength={100}
+                required
+              />
+              <Text size="1" color="gray">
+                {formData.header.length}/100
+              </Text>
+            </Box>
+
+            <Box>
+              <Text as="label" size="2" mb="1" weight="bold">
+                Content*
+              </Text>
+              <TextArea
+                name="content"
+                value={formData.content}
+                onChange={handleChange}
+                placeholder="Text"
+                size="3"
+                maxLength={280}
+                required
+              />
+              <Text size="1" color="gray">
+                {formData.content.length}/280
+              </Text>
+            </Box>
+
+            <Box>
+              <Text as="label" size="2" mb="1" weight="bold">
+                Tags
+              </Text>
+              <Flex wrap="wrap" gap="2" mb="2">
+                {TAGS.map((tag) => (
+                  <Badge
+                    key={tag.name}
+                    color={tag.color}
+                    size="2"
+                    onClick={() => handleTagChange(tag.name)}
+                    className={
+                      formData.tags.includes(tag.name)
+                        ? 'border'
+                        : 'border border-transparent opacity-60'
+                    }
+                  >
+                    {tag.name}
+                  </Badge>
+                ))}
+              </Flex>
+            </Box>
+
+            <Flex direction="column" gap="2" mt="4">
+              <Flex gap="3" justify="end">
+                <Button
+                  type="button"
+                  variant="soft"
+                  onClick={() => router.push('/')}
+                  disabled={paymentStatus !== null}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={!userContext || paymentStatus !== null || !isFormValid()}
+                >
+                  {paymentStatus === 'submitting'
+                    ? 'Subimitting...'
+                    : paymentStatus === 'verifying'
+                    ? 'Verifying...'
+                    : 'Create Post'}
+                </Button>
+              </Flex>
+              <Text size="1" color="gray" align="right">
+                {`Posting fee: ${POST_FEE.amount} ${POST_FEE.currency}`}
+              </Text>
+            </Flex>
+          </Flex>
+        </form>
+      )}
     </Box>
   );
 }
