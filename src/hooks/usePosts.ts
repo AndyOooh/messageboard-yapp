@@ -14,7 +14,6 @@ type PostCreateInput = {
 
 type PostUpdateInput = {
   txHash: string;
-  feeAddress: Address;
 };
 
 type PostDeleteInput = {

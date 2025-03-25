@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Box, Button, Flex, Heading, Text, TextField, TextArea, Badge } from '@radix-ui/themes';
 import { useToast } from '@/providers/ToastProvider';
-import { POST_FEE, TAGS, YODL_COMMUNITY_ADDRESS } from '@/constants';
+import { POST_FEE, TAGS } from '@/constants';
 import { sdk } from '@/lib/sdk';
 import { usePostMutations } from '@/hooks/usePosts';
 import { useUserContext } from '@/providers/UserContextProvider';
@@ -59,10 +59,8 @@ export default function CreatePostPage() {
       };
       const newPost = await create.mutateAsync(postData);
 
-      const feeAddress = userContext.community?.address || YODL_COMMUNITY_ADDRESS; // Security risk. Should be set on server side.
-
       // Step 2: Request payment with the post ID
-      const { txHash } = await sdk.requestPayment(feeAddress, {
+      const { txHash } = await sdk.requestPayment(POST_FEE.address, {
         amount: POST_FEE.amount,
         currency: POST_FEE.currency,
         memo: newPost.id.toString(),
@@ -73,7 +71,6 @@ export default function CreatePostPage() {
         id: newPost.id,
         data: {
           txHash,
-          feeAddress,
         },
       });
 

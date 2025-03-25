@@ -59,19 +59,6 @@ export async function create(data: Prisma.PostCreateInput) {
     data,
   });
 
-  try {
-    await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/revalidate?token=${process.env.REVALIDATION_TOKEN}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: '/' }),
-      },
-    );
-  } catch (error) {
-    console.error('Failed to revalidate:', error);
-  }
-
   return post;
 }
 
@@ -80,6 +67,21 @@ export async function update(id: number, data: Prisma.PostUpdateInput) {
     where: { id },
     data,
   });
+
+  // Only trigger revalidation if the post is being marked as paid
+  if (post.paid === true) {
+    try {
+      const revalidateUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/revalidate`;
+      await fetch(`${revalidateUrl}?token=${process.env.REVALIDATION_TOKEN}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: '/' }),
+        cache: 'no-store',
+      });
+    } catch (error) {
+      console.error('Failed to revalidate:', error);
+    }
+  }
 
   return post;
 }

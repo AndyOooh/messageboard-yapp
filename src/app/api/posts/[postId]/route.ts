@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as PostService from '@/lib/services/post';
 import { getPayment } from '@/lib/services/indexerApi';
 import { verifyPayment } from './verifyPayment';
+import { POST_FEE } from '@/constants';
 
 type RouteParams = { params: Promise<{ postId: string }> };
 
@@ -31,14 +32,16 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const { postId } = await params;
     const postIdInt = parseInt(postId);
-    const { txHash, feeAddress } = await request.json();
+    const { txHash } = await request.json();
 
     if (isNaN(postIdInt)) return NextResponse.json({ error: 'Invalid post ID' }, { status: 400 });
     if (!txHash) return NextResponse.json({ error: 'No txHash provided' }, { status: 400 });
 
     const payment = await getPayment(txHash);
+    console.log('🚀 payment:', payment);
+    const post = await PostService.getById(postIdInt);
 
-    const isValidPayment = verifyPayment(payment, feeAddress, postId);
+    const isValidPayment = verifyPayment(payment, POST_FEE.address, post);
 
     if (!isValidPayment) {
       return NextResponse.json({ error: 'Invalid payment' }, { status: 400 });
@@ -58,6 +61,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
+    // TODO: this should be a paid action. Use payor address to verify.
     const { postId } = await params;
     const postIdInt = parseInt(postId);
     const { creatorAddress } = await request.json();
