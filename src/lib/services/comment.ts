@@ -1,12 +1,12 @@
-import { prisma } from "@/lib/db";
-import type { Prisma } from "@prisma/client";
+import { prisma } from '@/lib/db';
+import type { Prisma } from '@prisma/client';
 
 export async function getByPostId(postId: number, options?: { limit?: number; offset?: number }) {
   const { limit = 10, offset = 0 } = options || {};
 
   return prisma.comment.findMany({
     where: { postId },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
     take: limit,
     skip: offset,
   });
@@ -40,6 +40,6 @@ export async function remove(id: number) {
 export async function getByCreator(creatorEns: string) {
   return prisma.comment.findMany({
     where: { creatorEns },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: 'desc' },
   });
 }

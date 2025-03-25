@@ -1,72 +1,85 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-import type { Post } from "@prisma/client";
-import { PostExtended } from "@/types";
+import type { Post } from '@prisma/client';
+import { PostExtended } from '@/types';
+import { Address } from 'viem';
 
 type PostCreateInput = {
-  creatorEns: string;
+  creatorEns?: string;
+  creatorAddress: Address;
   header: string;
   content: string;
-  txHash?: string;
-  paid: boolean;
   tags?: string[];
-  status?: string;
 };
 
-type PostUpdateInput = Partial<PostCreateInput>;
+type PostUpdateInput = {
+  txHash: string;
+  feeAddress: Address;
+};
+
+type PostDeleteInput = {
+  id: number;
+  creatorAddress: Address;
+};
 
 // API client functions
 const apiClient = {
-  getAllPosts: async (options?: { limit?: number; offset?: number; orderBy?: Record<string, string> }) => {
+  getAllPosts: async (options?: {
+    limit?: number;
+    offset?: number;
+    orderBy?: Record<string, string>;
+  }) => {
     const params = new URLSearchParams();
-    if (options?.limit) params.append("limit", options.limit.toString());
-    if (options?.offset) params.append("offset", options.offset.toString());
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.offset) params.append('offset', options.offset.toString());
 
     const response = await fetch(`/api/posts?${params.toString()}`);
-    if (!response.ok) throw new Error("Failed to fetch posts");
+    if (!response.ok) throw new Error('Failed to fetch posts');
     return response.json() as Promise<PostExtended[]>;
   },
 
   getPostById: async (id: number) => {
     const response = await fetch(`/api/posts/${id}`);
-    if (!response.ok) throw new Error("Failed to fetch post");
+    if (!response.ok) throw new Error('Failed to fetch post');
     return response.json() as Promise<PostExtended>;
   },
 
   createPost: async (data: PostCreateInput) => {
-    const response = await fetch("/api/posts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const response = await fetch('/api/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error("Failed to create post");
+    if (!response.ok) throw new Error('Failed to create post');
     return response.json() as Promise<Post>;
   },
 
   updatePost: async ({ id, data }: { id: number; data: PostUpdateInput }) => {
     const response = await fetch(`/api/posts/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error("Failed to update post");
+    if (!response.ok) throw new Error('Failed to update post');
     return response.json() as Promise<Post>;
   },
 
-  deletePost: async (id: number) => {
+  deletePost: async ({ id, creatorAddress }: PostDeleteInput) => {
     const response = await fetch(`/api/posts/${id}`, {
-      method: "DELETE",
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ creatorAddress }),
     });
-    if (!response.ok) throw new Error("Failed to delete post");
+    if (!response.ok) throw new Error('Failed to delete post');
     return response.json() as Promise<{ success: boolean }>;
   },
 };
 
 // Query keys
 export const postKeys = {
-  all: ["posts"] as const,
-  lists: () => [...postKeys.all, "list"] as const,
-  detail: (id: number) => [...postKeys.all, "detail", id] as const,
+  all: ['posts'] as const,
+  lists: () => [...postKeys.all, 'list'] as const,
+  detail: (id: number) => [...postKeys.all, 'detail', id] as const,
 };
 
 // Individual hooks for queries
@@ -99,7 +112,8 @@ export function usePostMutations() {
   });
 
   const update = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: PostUpdateInput }) => apiClient.updatePost({ id, data }),
+    mutationFn: ({ id, data }: { id: number; data: PostUpdateInput }) =>
+      apiClient.updatePost({ id, data }),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: postKeys.detail(variables.id) });
       queryClient.invalidateQueries({ queryKey: postKeys.lists() });
@@ -107,7 +121,8 @@ export function usePostMutations() {
   });
 
   const remove = useMutation({
-    mutationFn: apiClient.deletePost,
+    mutationFn: ({ id, creatorAddress }: PostDeleteInput) =>
+      apiClient.deletePost({ id, creatorAddress }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: postKeys.lists() });
     },

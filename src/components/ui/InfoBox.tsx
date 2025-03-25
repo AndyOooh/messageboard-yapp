@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { accentColor } from "@/constants";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
-import { Callout, Flex } from "@radix-ui/themes";
-import { ReactNode } from "react";
+import { ACCENT_COLOR } from '@/constants';
+import { InfoCircledIcon } from '@radix-ui/react-icons';
+import { Callout, Flex } from '@radix-ui/themes';
+import { ReactNode } from 'react';
 
 type InfoBoxProps = {
   children: ReactNode;
   icon?: ReactNode;
-  size?: "1" | "2" | "3";
-  color?: "teal" | "gray" | "red" | "iris";
+  size?: '1' | '2' | '3';
+  color?: 'teal' | 'gray' | 'red' | 'iris';
 };
 
 export function InfoBox({
   children,
   icon = <InfoCircledIcon />,
-  size = "1",
-  color = accentColor,
+  size = '1',
+  color = ACCENT_COLOR,
 }: InfoBoxProps) {
   return (
     <Callout.Root size={size} color={color}>

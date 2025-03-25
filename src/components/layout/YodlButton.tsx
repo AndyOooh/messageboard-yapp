@@ -1,79 +1,93 @@
-"use client";
+'use client';
 
-import { useToken } from "@/providers/TokenProviders";
-import { Code, DropdownMenu, Flex, IconButton, Link, Text } from "@radix-ui/themes";
-import Image from "next/image";
-import { MdOutlinePersonOff, MdOutlinePersonOutline } from "react-icons/md";
-import { FaTwitter, FaGithub } from "react-icons/fa";
+import { Code, DropdownMenu, Flex, IconButton, Link, Skeleton, Text } from '@radix-ui/themes';
+import Image from 'next/image';
+import { MdOutlinePersonOff, MdOutlinePersonOutline } from 'react-icons/md';
+import { FaTwitter, FaGithub } from 'react-icons/fa';
+import { useUserContext } from '@/providers/UserContextProvider';
 
 const socials = [
   {
     // label: "GitHub",
-    label: "yodlpay/messageboard-yapp",
-    href: "https://github.com/yodlpay/yappkit",
+    label: 'yodlpay/messageboard-yapp',
+    href: 'https://github.com/yodlpay/yappkit',
     icon: FaGithub,
   },
   {
     // label: "Twitter",
-    label: "@yodlpay",
-    href: "https://x.com/yodlpay",
+    label: '@yodlpay',
+    href: 'https://x.com/yodlpay',
     icon: FaTwitter,
   },
 ];
 
 export const YodlButton = () => {
-  const { isLoading, tokenInfo } = useToken();
+  const { userContext, isLoading } = useUserContext();
 
   const ensAvatar = null;
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <IconButton size='3' variant='soft' radius='full'>
-          {tokenInfo ? (
-            ensAvatar ? (
-              <Image src={ensAvatar} alt='Account avatar' width={24} height={24} />
+        {isLoading ? (
+          <Skeleton>
+            <IconButton size="3" radius="full" />
+          </Skeleton>
+        ) : (
+          <IconButton size="3" variant="soft" radius="full">
+            {userContext ? (
+              ensAvatar ? (
+                <Image src={ensAvatar} alt="Account avatar" width={24} height={24} />
+              ) : (
+                <MdOutlinePersonOutline />
+              )
             ) : (
-              <MdOutlinePersonOutline />
-            )
-          ) : (
-            <MdOutlinePersonOff />
-          )}
-        </IconButton>
+              <MdOutlinePersonOff />
+            )}
+          </IconButton>
+        )}
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
-        {tokenInfo ? (
+        {userContext ? (
           <>
-            <DropdownMenu.Label>Token</DropdownMenu.Label>
-
+            <DropdownMenu.Label>User</DropdownMenu.Label>
             <DropdownMenu.Item>
-              Community (iss):
-              <Code>{tokenInfo.iss}</Code>
-            </DropdownMenu.Item>
-            <DropdownMenu.Item>
-              Address (sub):
+              Address:
               <Code>
-                {tokenInfo.sub.slice(0, 4)}...{tokenInfo.sub.slice(-4)}
+                {userContext.address.slice(0, 4)}...{userContext.address.slice(-4)}
               </Code>
             </DropdownMenu.Item>
-            <DropdownMenu.Item>
-              ENS (ens):
-              <Code>{tokenInfo.ens}</Code>
-            </DropdownMenu.Item>
-            <DropdownMenu.Item>
-              App (aud):
-              <Code>{tokenInfo.aud}</Code>
-            </DropdownMenu.Item>
-            <DropdownMenu.Item>
-              Expires (exp):
-              <Code>{new Date(tokenInfo.exp * 1000).toLocaleString()}</Code>
-            </DropdownMenu.Item>
+
+            {userContext.primaryEnsName && (
+              <DropdownMenu.Item>
+                ENS:
+                <Code>{userContext.primaryEnsName}</Code>
+              </DropdownMenu.Item>
+            )}
+
+            {userContext.community && (
+              <>
+                <DropdownMenu.Label>Community</DropdownMenu.Label>
+                <DropdownMenu.Item>
+                  Address:
+                  <Code>{userContext.community.address}</Code>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item>
+                  Name:
+                  <Code>{userContext.community.ensName}</Code>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item>
+                  User ENS:
+                  <Code>{userContext.community.userEnsName}</Code>
+                </DropdownMenu.Item>
+              </>
+            )}
 
             <DropdownMenu.Separator />
             <DropdownMenu.Label>Connect</DropdownMenu.Label>
-            {socials.map(social => (
+            {socials.map((social) => (
               <DropdownMenu.Item key={social.label}>
-                <Link href={social.href} target='_blank'>
-                  <Flex align='center' gap='2'>
+                <Link href={social.href} target="_blank">
+                  <Flex align="center" gap="2">
                     <social.icon size={16} />
                     <Text>{social.label}</Text>
                   </Flex>

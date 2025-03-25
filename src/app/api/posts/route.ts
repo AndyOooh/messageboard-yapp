@@ -1,60 +1,59 @@
-import { NextRequest, NextResponse } from "next/server";
-import * as PostService from "@/lib/services/post";
+import { NextRequest, NextResponse } from 'next/server';
+import * as PostService from '@/lib/services/post';
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
     const offset = (page - 1) * limit;
 
     const posts = await PostService.getAll({
       limit,
       offset,
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
     });
 
     return NextResponse.json(posts);
   } catch (error) {
-    console.error("Error fetching posts:", error);
-    return NextResponse.json({ error: "Failed to fetch posts" }, { status: 500 });
+    console.error('Error fetching posts:', error);
+    return NextResponse.json({ error: 'Failed to fetch posts' }, { status: 500 });
   }
 }
 
 // Add POST method to create a new post
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json();
+    const { creatorEns, creatorAddress, header, content, tags } = await request.json();
 
     // Validate required fields
-    if (!data.creatorEns || !data.header || !data.content) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
-    // Ensure tags is an array
-    if (!Array.isArray(data.tags)) {
-      data.tags = [];
+    if (!creatorAddress || !header || !content) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     // Create the post
     const post = await PostService.create({
-      creatorEns: data.creatorEns,
-      header: data.header,
-      content: data.content,
-      txHash: data.txHash,
-      paid: data.paid ?? false,
-      tags: data.tags,
+      creatorEns,
+      creatorAddress,
+      header,
+      content,
+      tags: Array.isArray(tags) ? tags : [],
+      txHash: null,
+      paid: false,
     });
 
     return NextResponse.json(post, { status: 201 });
   } catch (error) {
-    console.error("Error creating post:", error);
+    console.error('Error creating post:', error);
 
     // Handle unique constraint violation (duplicate txHash)
-    if ((error as Error & { code?: string }).code === "P2002") {
-      return NextResponse.json({ error: "A post with this transaction hash already exists" }, { status: 409 });
+    if ((error as Error & { code?: string }).code === 'P2002') {
+      return NextResponse.json(
+        { error: 'A post with this transaction hash already exists' },
+        { status: 409 },
+      );
     }
 
-    return NextResponse.json({ error: "Failed to create post" }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create post' }, { status: 500 });
   }
 }

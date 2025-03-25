@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -6,7 +6,7 @@ declare global {
 }
 const prismaClientSingleton = () => {
   return new PrismaClient({
-    log: ["info", "warn", "error"],
+    log: ['info', 'warn', 'error'],
     datasources: {
       db: {
         url: process.env.DATABASE_URL,
@@ -17,6 +17,6 @@ const prismaClientSingleton = () => {
 
 export const prisma = globalThis.__db__ ?? prismaClientSingleton();
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   globalThis.__db__ = prisma;
 }
