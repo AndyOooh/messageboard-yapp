@@ -20,7 +20,6 @@ import { sdk } from '@/lib/sdk';
 import { usePostMutations } from '@/hooks/usePosts';
 import { useUserContext } from '@/providers/UserContextProvider';
 import { Address } from 'viem';
-import { InfoCircledIcon } from '@radix-ui/react-icons';
 
 export default function CreatePostPage() {
   const router = useRouter();
