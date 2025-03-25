@@ -8,6 +8,7 @@ import { POST_FEE, TAGS, YODL_COMMUNITY_ADDRESS } from '@/constants';
 import { sdk } from '@/lib/sdk';
 import { usePostMutations } from '@/hooks/usePosts';
 import { useUserContext } from '@/providers/UserContextProvider';
+import { Address } from 'viem';
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -51,7 +52,7 @@ export default function CreatePostPage() {
       // Step 1: Create the initial post (without txHash, paid=false)
       const postData = {
         creatorEns: userContext.primaryEnsName,
-        creatorAddress: userContext.address,
+        creatorAddress: userContext.address as Address,
         header: formData.header,
         content: formData.content,
         tags: formData.tags,
@@ -172,8 +173,8 @@ export default function CreatePostPage() {
                 {paymentStatus === 'submitting'
                   ? 'Subimitting...'
                   : paymentStatus === 'verifying'
-                    ? 'Verifying...'
-                    : 'Create Post'}
+                  ? 'Verifying...'
+                  : 'Create Post'}
               </Button>
             </Flex>
             <Text size="1" color="gray" align="right">

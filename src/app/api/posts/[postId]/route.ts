@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as PostService from '@/lib/services/post';
 import { getPayment } from '@/lib/services/indexerApi';
 import { verifyPayment } from './verifyPayment';
-import { sdk } from '@/lib/sdk';
-import { YODL_COMMUNITY_ADDRESS } from '@/constants';
 
 type RouteParams = { params: Promise<{ postId: string }> };
 

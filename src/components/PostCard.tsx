@@ -9,7 +9,8 @@ import { useVote } from '@/hooks/useVotes';
 import Link from 'next/link';
 import { ACCENT_COLOR, TAGS } from '@/constants';
 import { MdChatBubbleOutline, MdOutlineThumbDown, MdOutlineThumbUp } from 'react-icons/md';
-import { getEnsOrTruncatedAddress } from '@/lib/utils';
+import { truncateAddress } from '@/lib/utils';
+import { PersonIcon } from '@radix-ui/react-icons';
 
 type PostCardProps = {
   post: PostExtended;
@@ -36,7 +37,7 @@ export default function PostCard({ post: initialPost }: PostCardProps) {
         onSuccess: (updatedPost) => {
           setPost(updatedPost);
         },
-      },
+      }
     );
   };
 
@@ -45,9 +46,9 @@ export default function PostCard({ post: initialPost }: PostCardProps) {
       <Flex direction="column" gap="3">
         <Flex justify="between" align="center">
           <Flex align="center" gap="2">
-            <Avatar fallback={post.creatorEns.substring(0, 2)} size="2" />
+            <Avatar fallback={post.creatorEns?.substring(0, 2) ?? <PersonIcon />} size="2" />
             <Text size="2" color="gray">
-              {getEnsOrTruncatedAddress(post.creatorEns)}
+              {post.creatorEns ?? truncateAddress(post.creatorAddress)}
             </Text>
           </Flex>
           <Text size="1" color="gray">
