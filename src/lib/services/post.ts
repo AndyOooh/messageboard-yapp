@@ -1,3 +1,4 @@
+import { YAPP_URL } from '@/constants';
 import { prisma } from '@/lib/db';
 import type { Prisma } from '@prisma/client';
 
@@ -71,7 +72,7 @@ export async function update(id: number, data: Prisma.PostUpdateInput) {
   // Only trigger revalidation if the post is being marked as paid
   if (post.paid === true) {
     try {
-      const revalidateUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/revalidate`;
+      const revalidateUrl = `${YAPP_URL}/api/revalidate`;
       await fetch(`${revalidateUrl}?token=${process.env.REVALIDATION_TOKEN}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
