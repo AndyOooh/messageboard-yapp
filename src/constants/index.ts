@@ -27,7 +27,7 @@ export const YAPP_ENS_NAME = 'messageboard-yapp.yodl.eth';
 export const PARENT_URL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3001'
-    : 'https://dapp-git-sb-add-user-context-request-yodl.vercel.app';
+    : 'https://yodl.me';
 
 // The title of your message board that appears on the homepage
 export const BOARD_TITLE = 'YodlBoard';
